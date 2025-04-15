@@ -2,13 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\BarangController;
 use App\Http\Controllers\KategoriController;
-use App\Http\Controllers\MerkController;
-use App\Http\Controllers\PengajuanController;
-use App\Http\Controllers\PengaduanController;
-use App\Http\Controllers\RuanganController;
-use App\Http\Controllers\MejaController;
 use App\Http\Controllers\UsersController;
 use App\Http\Controllers\SettingsController;
 
@@ -44,10 +38,8 @@ Route::middleware(['auth'])->group(function () {
 
     //Route Users
     Route::get('/users', [UsersController::class, 'index'])->name('users.index');
-    Route::get('/users/create', [UsersController::class, 'create'])->name('users.create');
-    Route::post('/users', [UsersController::class, 'store'])->name('users.store');
-    Route::get('/users/{id}/edit', [UsersController::class, 'edit'])->name('users.edit');
-    Route::put('/users/{id}', [UsersController::class, 'update'])->name('users.update');
+    Route::post('/users/store', [UsersController::class, 'store'])->name('users.store');
+    Route::put('/users/{id}', [UsersController::class, 'store'])->name('users.update');
     Route::delete('/users/{id}', [UsersController::class, 'delete'])->name('users.delete');
     Route::get('/users/invoice', [UsersController::class, 'invoice'])->name('users.invoice');
     

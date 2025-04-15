@@ -7,6 +7,7 @@
 <!-- Start Main Wrapper -->
 <main class="main-wrapper">
   <div class="main-content">
+
     <!-- Breadcrumb -->
     <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
       <div class="breadcrumb-title pe-3">Users</div>
@@ -21,12 +22,61 @@
     </div>
     <!-- End Breadcrumb -->
 
+    <!-- Form Tambah/Edit -->
+    <div class="card mb-4">
+      <div class="card-header bg-success text-white">
+        <h5 class="mb-4">Add/Edit Kategori</h5>
+      </div>
+      <div class="card-body">
+        <form id="usersForm" action="{{ route('users.store') }}" method="POST">
+          @csrf
+          <input type="hidden" id="id" name="id">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label for="name" class="form-label">Nama</label>
+              <input type="text" name="name" id="name" class="form-control" required>
+            </div>
+            <div class="col-md-6">
+              <label for="email" class="form-label">Email</label>
+              <input type="email" name="email" id="email" class="form-control" required>
+            </div>
+            <div class="col-md-6">
+              <label for="telepon" class="form-label">Telepon</label>
+              <input type="text" name="telepon" id="telepon" class="form-control">
+            </div>
+            <div class="col-md-6">
+              <label for="alamat" class="form-label">Alamat</label>
+              <input type="text" name="alamat" id="alamat" class="form-control">
+            </div>
+            <div class="col-md-6">
+              <label for="role" class="form-label">Role</label>
+              <select name="role" id="role" class="form-select" required>
+                @php
+                    $roles = ['Admin', 'Supervisor', 'Petugas', 'Member'];
+                @endphp
+                @foreach($roles as $role)
+                  <option value="{{ $role }}" {{ (old('role', $editUser->role ?? '') == $role) ? 'selected' : '' }}>{{ $role }}</option>
+                @endforeach
+              </select>
+            </div>
+            @if (!isset($editUser))
+            <div class="col-md-6">
+              <label for="password" class="form-label">Password</label>
+              <input type="password" name="password" id="password" class="form-control" required>
+            </div>
+            @endif
+          </div>
+
+          <div class="mt-3">
+            <button type="submit" class="btn btn-grd-primary px-4">Simpan</button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <!-- End Form -->
+
     <!-- Users Table -->
     <h6 class="mb-3 text-uppercase">Users Table</h6>
-    <div class="mb-3">
-      <a href="{{ route('users.create') }}" class="btn btn-primary"><i class="bx bx-user-plus"></i> Tambah Pengguna</a>
-      <a href="{{ route('users.invoice') }}" class="btn btn-primary"><i class="bx bx-user-plus"></i> Invoice </a>
-    </div>
 
     <div class="card">
       <div class="card-header bg-primary text-white">
@@ -58,19 +108,27 @@
                   @php
                       $roleColors = [
                           'admin' => 'primary',
-                          'guru' => 'secondary',
-                          'supervisor' => 'warning',
-                          'petugas' => 'info'
+                          'supervisor' => 'secondary',
+                          'petugas' => 'warning',
+                          'member' => 'info'
                       ];
                   @endphp
-                  <span class="badge bg-{{ $roleColors[$user->role] ?? 'dark' }}">
+                  <span class="badge bg-{{ $roleColors[strtolower($user->role)] ?? 'dark' }}">
                     {{ ucfirst($user->role) }}
                   </span>
                 </td>
                 <td>
-                  <a href="{{ route('users.edit', $user->id) }}" class="btn btn-warning btn-sm">
-                    <i class="bx bx-edit-alt"></i> Edit
-                  </a>
+                  <button 
+                  class="btn btn-warning btn-sm editUsers"
+                  data-id="{{ $user->id }}"
+                  data-name="{{ $user->name }}"
+                  data-email="{{ $user->email }}"
+                  data-telepon="{{ $user->telepon }}"
+                  data-alamat="{{ $user->alamat }}"
+                  data-role="{{ $user->role }}"
+                >
+                  <i class="bx bx-edit-alt"></i> Edit
+                </button>                
                   <form action="{{ route('users.delete', $user->id) }}" method="POST" style="display:inline;">
                     @csrf
                     @method('DELETE')
@@ -90,6 +148,18 @@
   </div>
 </main>
 <!-- End Main Wrapper -->
+<script>
+document.querySelectorAll('.editUsers').forEach(button => {
+  button.addEventListener('click', function() {
+    document.getElementById('id').value = this.dataset.id;
+    document.getElementById('name').value = this.dataset.name;
+    document.getElementById('email').value = this.dataset.email;
+    document.getElementById('telepon').value = this.dataset.telepon;
+    document.getElementById('alamat').value = this.dataset.alamat;
+    document.getElementById('role').value = this.dataset.role;
+  });
+});
+</script>
 
 @include('layout.footer')
 

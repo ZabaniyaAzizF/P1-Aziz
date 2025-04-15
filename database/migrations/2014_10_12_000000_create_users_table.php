@@ -18,8 +18,9 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->string('telepon', 13)->nullable();
-            $table->string('alamat', 80)->nullable();
-            $table->enum('role', ['admin', 'petugas', 'supervisor', 'guru'])->default('petugas');
+            $table->text('alamat')->nullable();
+            $table->enum('role', ['Admin', 'Supervisor', 'Petugas', 'Member'])->default('Member');
+            $table->decimal('saldo')->default(0);
             $table->rememberToken();
             $table->timestamps();
         });

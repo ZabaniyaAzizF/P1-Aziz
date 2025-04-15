@@ -23,8 +23,8 @@
             </a>
           </li>
           <li class="menu-label">Menu</li>
-          @if (auth()->user()->role == 'admin' || auth()->user()->role == 'petugas'
-          || auth()->user()->role == 'supervisor' || auth()->user()->role == 'guru')
+          @if (auth()->user()->role == 'Admin' || auth()->user()->role == 'Petugas'
+          || auth()->user()->role == 'Supervisor' || auth()->user()->role == 'Member')
           <li>
             <a href="{{ route('Kategori.index') }}">
               <div class="parent-icon"><i class="material-icons-outlined">inventory_2</i>
@@ -82,7 +82,7 @@
             </a>
           </li>
           @endif
-          @if (auth()->user()->role == 'admin')
+          @if (auth()->user()->role == 'Admin')
           <li class="menu-label">Pengaturan Admin</li>
           <li>
             <a href="{{ route('users.index') }}">
