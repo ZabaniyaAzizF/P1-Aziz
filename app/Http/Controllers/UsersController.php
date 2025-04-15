@@ -21,39 +21,44 @@ class UsersController extends Controller
      */
     public function store(Request $request)
     {
-
-        // dd($request->all());
-        // Validasi input dari form
-        $validated = $request->validate([
+        $isUpdate = $request->id ? true : false;
+    
+        $rules = [
             'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
             'telepon' => 'nullable|string|max:13',
             'alamat' => 'nullable|string|max:80',
-            'password' => 'required|string|min:8',
-            'role' => 'required|in:Admin,Pengguna,Supervisor,Petugas',
-        ]);
-
-        if ($request->id) {
-            // Update user berdasarkan user_id
-            $user = User::findOrFail($request->id);
-            $user->update($validated);
-
-            // Jika password diisi, perbarui passwordnya
-            if ($request->filled('password')) {
-                $user->update(['password' => bcrypt($request->password)]);
-            }
-
-            return redirect()->route('users.index')->with('success', 'User berhasil diperbarui!');
+            'role' => 'required|in:Admin,Pengguna,Supervisor,Petugas,Member',
+        ];
+    
+        // Validasi email berbeda antara create dan update
+        if ($isUpdate) {
+            $rules['email'] = 'required|email|max:255|unique:users,email,' . $request->id;
+            $rules['password'] = 'nullable|string|min:8';
         } else {
-            // Menambahkan user baru
+            $rules['email'] = 'required|email|max:255|unique:users';
+            $rules['password'] = 'required|string|min:8';
+        }
+    
+        $validated = $request->validate($rules);
+    
+        if ($isUpdate) {
+            $user = User::findOrFail($request->id);
+    
+            // Jika password dikosongkan, jangan diubah
             if ($request->filled('password')) {
                 $validated['password'] = bcrypt($request->password);
+            } else {
+                unset($validated['password']);
             }
-
+    
+            $user->update($validated);
+            return redirect()->route('users.index')->with('success', 'User berhasil diperbarui!');
+        } else {
+            $validated['password'] = bcrypt($request->password);
             User::create($validated);
             return redirect()->route('users.index')->with('success', 'User berhasil ditambahkan!');
         }
-    }
+    }    
 
     /**
      * Get data for editing

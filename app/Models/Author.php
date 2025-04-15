@@ -5,20 +5,21 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Kategori extends Model
+class Author extends Model
 {
     use HasFactory;
 
-    protected $table = 'kategori';
+    protected $table = 'author';
     
-    protected $primaryKey = 'kode_kategori';
+    protected $primaryKey = 'kode_author';
     protected $keyType = 'string'; // Tipe data primary key adalah string
     public $incrementing = false;
     protected $fillable = [
-        'kode_kategori',
-        'nama_kategori',
+        'kode_author',
+        'nama_author',
     ];
 
+    
     // // Relasi ke Model Barang
     // public function barang()
     // {
@@ -29,5 +30,5 @@ class Kategori extends Model
     // {
     //     return $this->belongsTo(SubKategori::class, 'kode_sub', 'kode_sub');
     // }
-
+    
 }

@@ -74,7 +74,7 @@
 
 <script>
   function printInvoice() {
-    document.getElementById('printButton').style.display = 'none'; // Sembunyikan tombol print
+    document.getElementById('printButton').style.display = 'none';
     var printContents = document.getElementById('printArea').innerHTML;
     var originalContents = document.body.innerHTML;
 

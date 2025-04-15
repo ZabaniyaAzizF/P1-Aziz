@@ -5,18 +5,21 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Kategori extends Model
+class Promo extends Model
 {
     use HasFactory;
 
-    protected $table = 'kategori';
+    protected $table = 'promo';
     
-    protected $primaryKey = 'kode_kategori';
+    protected $primaryKey = 'kode_promo';
     protected $keyType = 'string'; // Tipe data primary key adalah string
     public $incrementing = false;
     protected $fillable = [
-        'kode_kategori',
-        'nama_kategori',
+        'kode_promo',
+        'type',
+        'discount',
+        'start_date',
+        'end_date',
     ];
 
     // // Relasi ke Model Barang

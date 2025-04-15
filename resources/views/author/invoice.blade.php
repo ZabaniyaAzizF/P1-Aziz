@@ -9,7 +9,7 @@
     <div class="main-content">
       <!--breadcrumb-->
       <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
-        <div class="breadcrumb-title pe-3">Users</div>
+        <div class="breadcrumb-title pe-3">Author</div>
         <div class="ps-3">
           <nav aria-label="breadcrumb">
             <ol class="breadcrumb mb-0 p-0">
@@ -40,16 +40,16 @@
               <thead>
                 <tr>
                   <th>No</th>
-                  <th>Kode Kategori</th>
-                  <th>Nama Kategori</th>
+                  <th>Kode Author</th>
+                  <th>Nama Author</th>
                 </tr>
               </thead>
               <tbody>
-                @foreach ($kategori as $item)
+                @foreach ($author as $item)
                 <tr>
                   <td>{{$loop->iteration}}</td>
-                  <td>{{ $item->kode_kategori }}</td>
-                  <td>{{ $item->nama_kategori }}</td>
+                  <td>{{ $item->kode_author }}</td>
+                  <td>{{ $item->nama_author }}</td>
                 </tr>
                 @endforeach
               </tbody>
@@ -74,7 +74,7 @@
 
 <script>
   function printInvoice() {
-    document.getElementById('printButton').style.display = 'none'; // Sembunyikan tombol print
+    document.getElementById('printButton').style.display = 'none';
     var printContents = document.getElementById('printArea').innerHTML;
     var originalContents = document.body.innerHTML;
 
