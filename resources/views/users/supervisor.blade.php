@@ -74,7 +74,7 @@
     <div class="card">
       <div class="card-header bg-primary text-white">
         <h5 class="mb-3">Daftar Pengguna</h5>
-        <a href="{{ route('users.invoice') }}" class="btn btn-warning"><i class="bx bx-user-plus"></i> Invoice </a>
+        <a href="{{ route('users.supervisor.invoice') }}" class="btn btn-warning"><i class="bx bx-user-plus"></i> Invoice </a>
       </div>
       <div class="card-body">
         <div class="table-responsive">

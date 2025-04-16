@@ -247,4 +247,22 @@ class UsersController extends Controller
         $users = User::all();
         return view('users.invoice', compact('users'));
     }
+
+    public function invoiceAdmin(Request $request)
+    {
+        $users = User::where('role', 'Admin')->get();
+        return view('users.invoice_admin', compact('users'));
+    }
+
+    public function invoiceSupervisor(Request $request)
+    {
+        $users = User::where('role', 'Supervisor')->get();
+        return view('users.invoice_supervisor', compact('users'));
+    }
+
+    public function invoicePertugas(Request $request)
+    {
+        $users = User::where('role', 'Petugas')->get();
+        return view('users.invoice_petugas', compact('users'));
+    }
 }

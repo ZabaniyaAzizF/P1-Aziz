@@ -57,7 +57,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/store', [UsersController::class, 'storeAdmin'])->name('users.admin.store');
         Route::put('/{id}', [UsersController::class, 'storeAdmin'])->name('users.admin.update');
         Route::delete('/{id}', [UsersController::class, 'delete'])->name('users.admin.delete');
-        Route::get('/invoice', [UsersController::class, 'invoice'])->name('users.admin.invoice');
+        Route::get('/invoice', [UsersController::class, 'invoiceAdmin'])->name('users.admin.invoice');
     });    
 
     //Route Users Supervisor
@@ -66,7 +66,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/store', [UsersController::class, 'storeSupervisor'])->name('users.supervisor.store');
         Route::put('/{id}', [UsersController::class, 'storeSupervisor'])->name('users.supervisor.update');
         Route::delete('/{id}', [UsersController::class, 'delete'])->name('users.supervisor.delete');
-        Route::get('/invoice', [UsersController::class, 'invoice'])->name('users.supervisor.invoice');
+        Route::get('/invoice', [UsersController::class, 'invoiceSupervisor'])->name('users.supervisor.invoice');
     });    
 
     //Route Users Petugas
@@ -75,7 +75,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/store', [UsersController::class, 'storePetugas'])->name('users.petugas.store');
         Route::put('/{id}', [UsersController::class, 'storePetugas'])->name('users.petugas.update');
         Route::delete('/{id}', [UsersController::class, 'delete'])->name('users.petugas.delete');
-        Route::get('/invoice', [UsersController::class, 'invoice'])->name('users.petugas.invoice');
+        Route::get('/invoice', [UsersController::class, 'invoicePetugas'])->name('users.petugas.invoice');
     });    
 
     //Route Users Member
