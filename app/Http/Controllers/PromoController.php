@@ -3,68 +3,79 @@
 namespace App\Http\Controllers;
 
 use App\Models\Promo;
+use App\Models\Kategori;
+use App\Models\Author;
+use App\Models\Publisher;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class PromoController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Display a listing of the promo.
      */
-    public function index(Request $request)
+    public function index()
     {
-        $kategori = Promo::all();
-        return view('kategori.index', compact('kategori'));
+        $promo = Promo::all();
+        $kategoriList = Kategori::all();
+        $authorList = Author::all();
+        $publisherList = Publisher::all();
+        $memberList = User::where('role', 'Member')->get();
+    
+        return view('promo.index', compact('promo', 'kategoriList', 'authorList', 'publisherList', 'memberList'));
     }
 
     /**
-     * Store or Update a kategori
+     * Store or Update a promo
      */
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'nama_kategori' => 'required|string|max:255',
+            'kode_promo' => 'required|string|max:6',
+            'type' => 'required|string',
+            'discount' => 'required|numeric',
+            'start_date' => 'required|date',
+            'end_date' => 'required|date',
+            'kode_kategori' => 'nullable|string',
+            'kode_author' => 'nullable|string',
+            'kode_publisher' => 'nullable|string',
+            'user_id' => 'nullable|integer',
         ]);
-
-        if ($request->kategori_id) {
-            // UPDATE Kategori berdasarkan ID
-            $kategori = Promo::findOrFail($request->kategori_id);
-            $kategori->update([
-                'nama_kategori' => $validated['nama_kategori'],
-            ]);
-
-            return redirect()->route('Kategori.index')->with('success', 'Kategori berhasil diperbarui.');
+    
+        if ($request->promo_id) {
+            $promo = Promo::findOrFail($request->promo_id);
+            $promo->update($validated);
+            return redirect()->route('Promo.index')->with('success', 'Promo berhasil diperbarui.');
         } else {
-            // Gunakan autonumber untuk kode_kategori
-            $validated['kode_kategori'] = autonumber('kategori', 'kode_kategori', 3, 'KTG');
-
-            // INSERT kategori baru
             Promo::create($validated);
-            return redirect()->route('Kategori.index')->with('success', 'Kategori berhasil ditambahkan.');
+            return redirect()->route('Promo.index')->with('success', 'Promo berhasil ditambahkan.');
         }
     }
+    
 
     /**
      * Get data for editing
      */
     public function edit($id)
     {
-        $kategori = Promo::findOrFail($id);
-        return response()->json($kategori);
+        $promo = Promo::findOrFail($id);
+        return response()->json($promo);
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified promo from storage.
      */
     public function delete($id)
     {
-        $kategori = Promo::findOrFail($id);
-        $kategori->delete();
-        return redirect()->route('Kategori.index')->with('success', 'Kategori berhasil dihapus.');
+        $promo = Promo::findOrFail($id);
+        $promo->delete();
+        return redirect()->route('Promo.index')->with('success', 'Promo berhasil dihapus.');
     }
 
     public function invoice(Request $request)
     {
-        $kategori = Promo::all();
-        return view('kategori.invoice', compact('kategori'));
+        $promo = Promo::all();
+        return view('promo.invoice', compact('promo'));
     }
 }

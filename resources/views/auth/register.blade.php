@@ -13,40 +13,43 @@
 
 <!--authentication-->
 <div class="auth-basic-wrapper d-flex align-items-center justify-content-center">
-  <div class="container-fluid my-5 my-lg-0">
+  <div class="container-fluid my-2">
     <div class="row">
       <div class="col-12 col-md-8 col-lg-6 col-xl-5 col-xxl-4 mx-auto">
         <div class="card rounded-4 mb-0 border-top border-4 border-primary border-gradient-1">
-          <div class="card-body p-5">
-            <img src="{{ asset('storage/' . $setting->path_logo) }}" class="mb-4" width="145" alt="">
+          <div class="card-body pt-2 pb-3 px-3">       
+            <img src="{{ asset('storage/' . $setting->path_logo) }}" class="mb-4 d-block mx-auto" width="145" alt="">
             <h4 class="fw-bold">REGISTER</h4>
             <p class="mb-0">Fill the form below to create your account</p>
 
             <div class="form-body my-5">
-              @if(session('failed'))
-                <div class="alert alert-danger">
-                  {{ session('failed') }}
-                </div>
-              @endif
+              @if ($errors->any())
+              <div class="alert alert-danger">
+                <ul>
+                  @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                  @endforeach
+                </ul>
+              </div>
+            @endif            
               <form class="row g-3" method="POST" action="{{ route('register.store') }}">
-                @csrf <!-- Token CSRF -->
-              
-                <div class="col-12">
+                @csrf
+                <div class="col-md-6">
                   <label for="inputName" class="form-label">Full Name</label>
                   <input type="text" name="name" class="form-control" id="inputName" placeholder="Your Name" required>
                 </div>
               
-                <div class="col-12">
+                <div class="col-md-6">
                   <label for="inputEmail" class="form-label">Email</label>
                   <input type="email" name="email" class="form-control" id="inputEmail" placeholder="email@example.com" required>
                 </div>
               
-                <div class="col-12">
+                <div class="col-md-6">
                   <label for="inputPhone" class="form-label">Phone Number</label>
                   <input type="text" name="telepon" class="form-control" id="inputPhone" placeholder="081234567890" required>
                 </div>
               
-                <div class="col-12">
+                <div class="col-md-6">
                   <label for="inputPassword" class="form-label">Password</label>
                   <div class="input-group" id="show_hide_password">
                     <input type="password" name="password" class="form-control border-end-0" id="inputPassword" placeholder="Enter Password" required>
@@ -59,12 +62,12 @@
                   <input type="password" name="password_confirmation" class="form-control" id="inputPasswordConfirm" placeholder="Confirm Password" required>
                 </div>
               
-                <div class="col-12 col-mb-3">
+                <div class="col-12">
                   <div class="d-grid">
                     <button type="submit" class="btn btn-grd-primary">Register</button>
                   </div>
                 </div>
-              </form>              
+              </form>                      
             </div>
             <h5>Already have an account? <a href="{{ route('login') }}">Log In!</a></h5>
           </div>

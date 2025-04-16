@@ -117,10 +117,10 @@
                 @php
                     $user = Auth::user();
                     $roleColors = [
-                        'admin' => 'primary',
-                        'pengguna' => 'secondary',
-                        'supervisor' => 'warning',
-                        'petugas' => 'info'
+                        'Admin' => 'primary',
+                        'Supervisor' => 'secondary',
+                        'Petugas' => 'warning',
+                        'Member' => 'info'
                     ];
                     $roleColor = $roleColors[$user->role] ?? 'dark';
                 @endphp

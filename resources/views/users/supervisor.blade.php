@@ -23,12 +23,12 @@
     <!-- End Breadcrumb -->
 
     <!-- Form Tambah/Edit -->
-    {{-- <div class="card mb-4">
+    <div class="card mb-4">
       <div class="card-header bg-success text-white">
-        <h5 class="mb-4">Add/Edit User</h5>
+        <h5 class="mb-4">Add/Edit User Supervisor</h5>
       </div>
       <div class="card-body">
-        <form id="usersForm" action="{{ route('users.store') }}" method="POST">
+        <form id="usersForm" action="{{ route('users.supervisor.store') }}" method="POST">
           @csrf
           <input type="hidden" id="id" name="id">
           <div class="row g-3">
@@ -49,16 +49,9 @@
               <input type="text" name="alamat" id="alamat" class="form-control">
             </div>
             <div class="col-md-6">
-              <label for="role" class="form-label">Role</label>
-              <select name="role" id="role" class="form-select" required>
-                @php
-                    $roles = ['Admin', 'Supervisor', 'Petugas', 'Member'];
-                @endphp
-                @foreach($roles as $role)
-                  <option value="{{ $role }}">{{ $role }}</option>
-                @endforeach
-              </select>
-            </div>
+                <label for="role" class="form-label">Role</label>
+                <input type="text" name="role" id="role" class="form-control" value="Supervisor" required readonly>
+            </div> 
             <div class="col-md-6">
               <label for="password" class="form-label">Password</label>
               <input type="password" name="password" id="password" class="form-control">
@@ -72,7 +65,7 @@
           </div>          
         </form>
       </div>
-    </div> --}}
+    </div>
     <!-- End Form -->
 
     <!-- Users Table -->

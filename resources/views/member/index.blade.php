@@ -75,10 +75,10 @@
                 <td>{{ $item->nama_member }}</td>
                 <td>
                 @if (auth()->user()->role == 'Supervisor' || auth()->user()->role == 'Admin')
-                  <button class="btn btn-warning btn-sm editMember" data-id="{{ $item->id }}" data-kode="{{ $item->kode_member }}" data-nama="{{ $item->nama_member }}"><i class="bx bx-edit-alt"></i> Edit</button>
+                  <button class="btn btn-warning btn-sm editMember" data-id="{{ $item->id }}" data-kode="{{ $item->id }}" data-nama="{{ $item->nama_member }}"><i class="bx bx-edit-alt"></i> Edit</button>
                 @endif
                 @if (auth()->user()->role == 'Admin')
-                  <form action="{{ route('Member.delete', $item->kode_member) }}" method="POST" style="display:inline;">
+                  <form action="{{ route('Member.delete', $item->id) }}" method="POST" style="display:inline;">
                     @csrf
                     @method('DELETE')
                     <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Yakin ingin menghapus member ini?')">

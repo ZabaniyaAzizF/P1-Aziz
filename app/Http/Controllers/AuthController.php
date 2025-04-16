@@ -80,9 +80,10 @@ class AuthController extends Controller
         $user = new User();
         $user->name = $request->name;
         $user->email = $request->email;
+        $user->telepon = $request->telepon;
         $user->password = Hash::make($request->password);
         
-        // Atur rolenya sebagai 'Member' (dengan asumsi ada field role)
+        // Atur rolenya sebagai 'Member'
         $user->role = 'Member';
         
         $user->save();

@@ -22,15 +22,25 @@ class Promo extends Model
         'end_date',
     ];
 
-    // // Relasi ke Model Barang
-    // public function barang()
-    // {
-    //     return $this->hasMany(Barang::class, 'kode_kategori', 'kode_kategori');
-    // }
-
-    // public function subKategori()
-    // {
-    //     return $this->belongsTo(SubKategori::class, 'kode_sub', 'kode_sub');
-    // }
+    public function kategori()
+    {
+        return $this->belongsTo(Kategori::class, 'kode_kategori', 'kode_kategori');
+    }
+    
+    public function author()
+    {
+        return $this->belongsTo(Author::class, 'kode_author', 'kode_author');
+    }
+    
+    public function publisher()
+    {
+        return $this->belongsTo(Publisher::class, 'kode_publisher', 'kode_publisher');
+    }
+    
+    public function member()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+    
 
 }

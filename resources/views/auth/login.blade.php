@@ -18,7 +18,7 @@
            <div class="col-12 col-md-8 col-lg-6 col-xl-5 col-xxl-4 mx-auto">
             <div class="card rounded-4 mb-0 border-top border-4 border-primary border-gradient-1">
               <div class="card-body p-5">
-                  <img src="{{ asset('storage/' . $setting->path_logo) }}" class="mb-4" width="145" alt="">
+                <img src="{{ asset('storage/' . $setting->path_logo) }}" class="mb-4 d-block mx-auto" width="145" alt="">
                   <h4 class="fw-bold">LOGIN</h4>
                   <p class="mb-0">Enter your credentials to login your account</p>
 

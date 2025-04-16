@@ -22,13 +22,40 @@
     </div>
     <!-- End Breadcrumb -->
 
+    <!-- Notifikasi -->
+    @if (session('success'))
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <strong>Berhasil!</strong> {{ session('success') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    @endif
+
+    @if (session('error'))
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <strong>Gagal!</strong> {{ session('error') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    @endif
+
+    @if ($errors->any())
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <strong>Oops!</strong> Ada kesalahan pada inputan kamu:
+        <ul class="mb-0 mt-1">
+        @foreach ($errors->all() as $error)
+            <li>{{ $error }}</li>
+        @endforeach
+        </ul>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    @endif
+
     <!-- Form Tambah/Edit -->
-    {{-- <div class="card mb-4">
+    <div class="card mb-4">
       <div class="card-header bg-success text-white">
-        <h5 class="mb-4">Add/Edit User</h5>
+        <h5 class="mb-4">Add/Edit User Admin</h5>
       </div>
       <div class="card-body">
-        <form id="usersForm" action="{{ route('users.store') }}" method="POST">
+        <form id="usersForm" action="{{ route('users.admin.store') }}" method="POST">
           @csrf
           <input type="hidden" id="id" name="id">
           <div class="row g-3">
@@ -50,15 +77,8 @@
             </div>
             <div class="col-md-6">
               <label for="role" class="form-label">Role</label>
-              <select name="role" id="role" class="form-select" required>
-                @php
-                    $roles = ['Admin', 'Supervisor', 'Petugas', 'Member'];
-                @endphp
-                @foreach($roles as $role)
-                  <option value="{{ $role }}">{{ $role }}</option>
-                @endforeach
-              </select>
-            </div>
+              <input type="text" name="role" id="role" class="form-control" value="Admin" required readonly>
+            </div>              
             <div class="col-md-6">
               <label for="password" class="form-label">Password</label>
               <input type="password" name="password" id="password" class="form-control">
@@ -72,7 +92,7 @@
           </div>          
         </form>
       </div>
-    </div> --}}
+    </div>
     <!-- End Form -->
 
     <!-- Users Table -->
@@ -130,7 +150,7 @@
                 >
                   <i class="bx bx-edit-alt"></i> Edit
                 </button>                
-                  <form action="{{ route('users.delete', $user->id) }}" method="POST" style="display:inline;">
+                  <form action="{{ route('users.admin.delete', $user->id) }}" method="POST" style="display:inline;">
                     @csrf
                     @method('DELETE')
                     <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this user?')">

@@ -33,10 +33,10 @@
           <li><a href="{{ route('Author.index') }}"><i class="material-icons-outlined">person</i> Author</a></li>
           <li><a href="{{ route('Publisher.index') }}"><i class="material-icons-outlined">apartment</i> Publisher</a></li>
           <li><a href="{{ route('Member.index') }}"><i class="material-icons-outlined">groups</i> Member</a></li>
-          <li><a href="{{ route('Promo.index') }}"><i class="material-icons-outlined">discount</i> Promo</a></li>
-          <li><a href="{{ route('Kategori.index') }}"><i class="material-icons-outlined">book</i> Books</a></li>
-          <li><a href="{{ route('Kategori.index') }}"><i class="material-icons-outlined">shopping_cart_checkout</i> Peminjaman</a></li>
-          <li><a href="{{ route('Kategori.index') }}"><i class="material-icons-outlined">assignment_return</i> Pengembalian</a></li>
+          <li><a href="{{ route('Promo.index') }}"><i class="material-icons-outlined">local_offer</i> Promo</a></li>
+          <li><a href="{{ route('Books.index') }}"><i class="material-icons-outlined">book</i> Books</a></li>
+          <li><a href="{{ route('Peminjaman.index') }}"><i class="material-icons-outlined">shopping_cart_checkout</i> Peminjaman</a></li>
+          <li><a href="{{ route('Pengembalian.index') }}"><i class="material-icons-outlined">assignment_return</i> Pengembalian</a></li>
         </ul>
       </li>
       @endif
@@ -48,10 +48,10 @@
           <div class="menu-title">Transaksi</div>
         </a>
         <ul>
-          <li><a href="{{ route('Kategori.index') }}"><i class="material-icons-outlined">local_offer</i> Promo</a></li>
-          <li><a href="{{ route('Kategori.index') }}"><i class="material-icons-outlined">book</i> Books</a></li>
-          <li><a href="{{ route('Kategori.index') }}"><i class="material-icons-outlined">shopping_cart_checkout</i> Peminjaman</a></li>
-          <li><a href="{{ route('Kategori.index') }}"><i class="material-icons-outlined">assignment_return</i> Pengembalian</a></li>
+          <li><a href="{{ route('Promo.index') }}"><i class="material-icons-outlined">local_offer</i> Promo</a></li>
+          <li><a href="{{ route('Books.index') }}"><i class="material-icons-outlined">book</i> Books</a></li>
+          <li><a href="{{ route('Peminjaman.index') }}"><i class="material-icons-outlined">shopping_cart_checkout</i> Peminjaman</a></li>
+          <li><a href="{{ route('Pengembalian.index') }}"><i class="material-icons-outlined">assignment_return</i> Pengembalian</a></li>
         </ul>
       </li>
       @endif
@@ -60,15 +60,18 @@
       <li class="menu-label">Pengaturan Admin</li>
       <li>
         <a class="has-arrow" href="javascript:void(0);">
-          <div class="parent-icon"><i class="material-icons-outlined">settings</i></div>
+          <div class="parent-icon"><i class="material-icons-outlined">admin_panel_settings</i></div>
           <div class="menu-title">Pengaturan</div>
         </a>
         <ul>
-          <li><a href="{{ route('users.index') }}"><i class="material-icons-outlined">supervisor_account</i> Users</a></li>
-          <li><a href="{{ route('Settings') }}"><i class="material-icons-outlined">tune</i> Settings</a></li>
+          <li><a href="{{ route('users.index') }}"><i class="material-icons-outlined">people</i> Semua Users</a></li>
+          <li><a href="{{ route('users.admin.index') }}"><i class="material-icons-outlined">security</i> Users Admin</a></li>
+          <li><a href="{{ route('users.supervisor.index') }}"><i class="material-icons-outlined">supervised_user_circle</i> Users Supervisor</a></li>
+          <li><a href="{{ route('users.petugas.index') }}"><i class="material-icons-outlined">badge</i> Users Petugas</a></li>
+          <li><a href="{{ route('Settings') }}"><i class="material-icons-outlined">settings_applications</i> Settings</a></li>
         </ul>
       </li>
-      @endif
+      @endif      
     </ul>
   </div>
 </aside>
