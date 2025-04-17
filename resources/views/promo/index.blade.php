@@ -9,186 +9,159 @@
 
     <!-- Breadcrumb -->
     <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
-      <div class="breadcrumb-title pe-3">Promo</div>
+      <div class="breadcrumb-title pe-3">Data Buku</div>
       <div class="ms-auto">
         <nav aria-label="breadcrumb">
           <ol class="breadcrumb mb-0 p-0">
             <li class="breadcrumb-item"><a href="#"><i class="bx bx-home-alt"></i></a></li>
-            <li class="breadcrumb-item active" aria-current="page">Promo</li>
+            <li class="breadcrumb-item active" aria-current="page">Form Buku</li>
           </ol>
         </nav>
       </div>
     </div>
 
-    @if (auth()->user()->role == 'Admin' || auth()->user()->role == 'Petugas')
-    <div class="row">
-      <div class="col-12 col-lg-12">
-        <div class="card">
-          <div class="card-body p-4">
-            <h5 class="mb-4">Add/Edit Promo</h5>
-
-            <form id="promoForm" action="{{ route('Promo.store') }}" method="POST">
-              @csrf
-              <input type="hidden" id="promo_id" name="promo_id">
-
-              <?php
-                $kodepromo = autonumber('promo', 'kode_promo', 3, 'PRM');
-              ?>
-              <div class="row mb-3">
-                <label for="kode_promo" class="col-sm-3 col-form-label">Kode Promo</label>
-                <div class="col-sm-9">
-                  <input type="text" class="form-control" id="kode_promo" name="kode_promo" readonly value="<?= $kodepromo ?>" required>
-                </div>
-              </div>
-
-              <div class="row mb-3">
-                <label for="type" class="col-sm-3 col-form-label">Tipe Promo</label>
-                <div class="col-sm-9">
-                  <input type="text" class="form-control" id="type" name="type" required>
-                </div>
-              </div>  
-
-              <div class="row mb-3">
-                <label for="discount" class="col-sm-3 col-form-label">Diskon (%)</label>
-                <div class="col-sm-9">
-                  <input type="number" class="form-control" id="discount" name="discount" step="0.01" required>
-                </div>
-              </div>
-
-              <div class="row mb-3">
-                <label for="start_date" class="col-sm-3 col-form-label">Tanggal Mulai</label>
-                <div class="col-sm-9">
-                  <input type="datetime-local" class="form-control" id="start_date" name="start_date" required>
-                </div>
-              </div>
-
-              <div class="row mb-3">
-                <label for="end_date" class="col-sm-3 col-form-label">Tanggal Selesai</label>
-                <div class="col-sm-9">
-                  <input type="datetime-local" class="form-control" id="end_date" name="end_date" required>
-                </div>
-              </div>
-
-              <div class="row mb-3">
-                <label for="kode_kategori" class="col-sm-3 col-form-label">Kategori</label>
-                <div class="col-sm-9">
-                  <select class="form-control" name="kode_kategori" id="kode_kategori">
-                    <option value="">-- Semua --</option>
-                    @foreach ($kategoriList as $kategori)
-                      <option value="{{ $kategori->kode_kategori }}">{{ $kategori->nama_kategori }}</option>
-                    @endforeach
-                  </select>
-                </div>
-              </div>
-              
-              <div class="row mb-3">
-                <label for="kode_author" class="col-sm-3 col-form-label">Author</label>
-                <div class="col-sm-9">
-                  <select class="form-control" name="kode_author" id="kode_author">
-                    <option value="">-- Semua --</option>
-                    @foreach ($authorList as $author)
-                      <option value="{{ $author->kode_author }}">{{ $author->nama_author }}</option>
-                    @endforeach
-                  </select>
-                </div>
-              </div>
-              
-              <div class="row mb-3">
-                <label for="kode_publisher" class="col-sm-3 col-form-label">Publisher</label>
-                <div class="col-sm-9">
-                  <select class="form-control" name="kode_publisher" id="kode_publisher">
-                    <option value="">-- Semua --</option>
-                    @foreach ($publisherList as $publisher)
-                      <option value="{{ $publisher->kode_publisher }}">{{ $publisher->nama_publisher }}</option>
-                    @endforeach
-                  </select>
-                </div>
-              </div>
-              
-              <div class="row mb-3">
-                <label for="user_id" class="col-sm-3 col-form-label">Member</label>
-                <div class="col-sm-9">
-                  <select class="form-control" name="user_id" id="user_id">
-                    <option value="">-- Semua --</option>
-                    @foreach ($memberList as $member)
-                      <option value="{{ $member->id }}">{{ $member->name }}</option>
-                    @endforeach
-                  </select>
-                </div>
-              </div>
-                
-
-              <div class="row">
-                <label class="col-sm-3 col-form-label"></label>
-                <div class="col-sm-9">
-                  <button type="submit" class="btn btn-grd-primary px-4">Simpan</button>
-                </div>
-              </div>
-
-            </form>
-          </div>
-        </div>
-      </div>
-    </div>
-    @endif
-
-    <!-- Promo Table -->
     <div class="card">
-      <div class="card-header bg-primary text-white">
-        <h5 class="mb-0">Daftar Promo</h5>
-      </div>
-      <div class="card-body">
-        <div class="table-responsive">
-          <table id="example2" class="table table-striped table-hover table-bordered">
-            <thead class="table-dark">
-              <tr>
-                <th>No</th>
-                <th>Kode</th>
-                <th>Tipe</th>
-                <th>Diskon (%)</th>
-                <th>Tgl Mulai</th>
-                <th>Tgl Selesai</th>
-                <th>Aksi</th>
-              </tr>
-            </thead>
-            <tbody>
-              @foreach ($promo as $item)
-              <tr>
-                <td>{{ $loop->iteration }}</td>
-                <td>{{ $item->kode_promo }}</td>
-                <td>{{ $item->type }}</td>
-                <td>{{ $item->discount }}</td>
-                <td>{{ $item->start_date }}</td>
-                <td>{{ $item->end_date }}</td>
-                <td>
-                  @if (auth()->user()->role == 'Supervisor' || auth()->user()->role == 'Admin')
-                  <button class="btn btn-warning btn-sm editPromo"
-                    data-id="{{ $item->kode_promo }}"
-                    data-type="{{ $item->type }}"
-                    data-discount="{{ $item->discount }}"
-                    data-start="{{ $item->start_date }}"
-                    data-end="{{ $item->end_date }}">
-                    <i class="bx bx-edit-alt"></i> Edit
-                  </button>
-                  @endif
-                  @if (auth()->user()->role == 'Admin')
-                  <form action="{{ route('Promo.delete', $item->kode_promo) }}" method="POST" style="display:inline;">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Yakin ingin menghapus promo ini?')">
-                      <i class="bx bx-trash"></i> Hapus
-                    </button>
-                  </form>
-                  @endif
-                </td>
-              </tr>
+      <div class="card-body p-4">
+        <h5 class="mb-4">{{ isset($book) ? 'Edit Buku' : 'Tambah Buku' }}</h5>
+
+        <form action="{{ isset($book) ? route('Books.update', $book->id) : route('Books.store') }}" method="POST" enctype="multipart/form-data">
+          @csrf
+          @if(isset($book)) @method('PUT') @endif
+
+          <div class="mb-3">
+            <label for="title" class="form-label">Judul Buku</label>
+            <input type="text" class="form-control" id="title" name="title" value="{{ old('title', $book->title ?? '') }}" required>
+          </div>
+
+          <div class="mb-3">
+            <label for="kategori_id" class="form-label">Kategori</label>
+            <select class="form-select" name="kategori_id" id="kategori_id" required>
+              <option value="">Pilih Kategori</option>
+              @foreach($kategoriList as $kategori)
+                <option value="{{ $kategori->id }}" {{ (isset($book) && $book->kategori_id == $kategori->id) ? 'selected' : '' }}>{{ $kategori->nama_kategori }}</option>
               @endforeach
-            </tbody>
-          </table>
-        </div>
+            </select>
+          </div>
+
+          <div class="mb-3">
+            <label for="publisher_id" class="form-label">Penerbit</label>
+            <select class="form-select" name="publisher_id" id="publisher_id" required>
+              <option value="">Pilih Penerbit</option>
+              @foreach($publisherList as $publisher)
+                <option value="{{ $publisher->id }}" {{ (isset($book) && $book->publisher_id == $publisher->id) ? 'selected' : '' }}>{{ $publisher->nama_publisher }}</option>
+              @endforeach
+            </select>
+          </div>
+
+          <div class="mb-3">
+            <label for="author_id" class="form-label">Pengarang</label>
+            <select class="form-select" name="author_id" id="author_id" required>
+              <option value="">Pilih Pengarang</option>
+              @foreach($authorList as $author)
+                <option value="{{ $author->id }}" {{ (isset($book) && $book->author_id == $author->id) ? 'selected' : '' }}>{{ $author->nama_author }}</option>
+              @endforeach
+            </select>
+          </div>
+
+          <div class="mb-3">
+            <label for="type" class="form-label">Tipe Buku</label>
+            <select class="form-select" name="type" id="type" required onchange="toggleFields()">
+              <option value="fisik" {{ old('type', $book->type ?? '') == 'fisik' ? 'selected' : '' }}>Fisik</option>
+              <option value="digital" {{ old('type', $book->type ?? '') == 'digital' ? 'selected' : '' }}>Digital</option>
+            </select>
+          </div>
+
+          <div class="mb-3" id="fileField" style="display: none;">
+            <label for="file_url" class="form-label">File Buku (PDF)</label>
+            <input type="file" class="form-control" id="file_url" name="file_url">
+            @if(isset($book) && $book->file_url)
+              <small>File saat ini: <a href="{{ asset('storage/' . $book->file_url) }}" target="_blank">Lihat File</a></small>
+            @endif
+          </div>
+
+          <div class="mb-3" id="rakField" style="display: none;">
+            <label for="lokasi_rak" class="form-label">Lokasi Rak</label>
+            <input type="text" class="form-control" id="lokasi_rak" name="lokasi_rak" value="{{ old('lokasi_rak', $book->lokasi_rak ?? '') }}">
+          </div>
+
+          <div class="mb-3">
+            <label for="harga" class="form-label">Harga</label>
+            <input type="number" class="form-control" id="harga" name="harga" value="{{ old('harga', $book->harga ?? '') }}" required>
+          </div>
+
+          <div class="mb-3">
+            <label for="stock" class="form-label">Stok</label>
+            <input type="number" class="form-control" id="stock" name="stock" value="{{ old('stock', $book->stock ?? '') }}" required>
+          </div>
+
+          <div class="mb-3">
+            <label for="photo" class="form-label">Foto Buku</label>
+            <input type="file" class="form-control" id="photo" name="photo">
+            @if(isset($book) && $book->photo)
+              <small>Foto saat ini: <img src="{{ asset('storage/' . $book->photo) }}" alt="foto" width="80"></small>
+            @endif
+          </div>
+
+          <button type="submit" class="btn btn-primary">Simpan</button>
+        </form>
       </div>
     </div>
-    <!-- End Promo Table -->
+
+    <hr class="my-5">
+
+<h5 class="mb-3">Daftar Buku</h5>
+
+<div class="table-responsive">
+  <table class="table table-bordered align-middle">
+    <thead class="table-light">
+      <tr>
+        <th>No</th>
+        <th>Judul</th>
+        <th>Kategori</th>
+        <th>Penerbit</th>
+        <th>Author</th>
+        <th>Tipe</th>
+        <th>Harga</th>
+        <th>Stok</th>
+        <th>Foto</th>
+        <th>Aksi</th>
+      </tr>
+    </thead>
+    <tbody>
+      @forelse($books as $index => $book)
+      <tr>
+        <td>{{ $index + 1 }}</td>
+        <td>{{ $book->title }}</td>
+        <td>{{ $book->kategori->nama_kategori ?? '-' }}</td>
+        <td>{{ $book->publisher->nama_publisher ?? '-' }}</td>
+        <td>{{ $book->author->nama_author ?? '-' }}</td>
+        <td>{{ ucfirst($book->type) }}</td>
+        <td>Rp{{ number_format($book->harga, 0, ',', '.') }}</td>
+        <td>{{ $book->stock }}</td>
+        <td>
+          @if($book->photo)
+            <img src="{{ asset('storage/' . $book->photo) }}" width="50" alt="Foto Buku">
+          @else
+            -
+          @endif
+        </td>
+        <td>
+          <a href="{{ route('Books.edit', $book->id) }}" class="btn btn-sm btn-warning">Edit</a>
+          <form action="{{ route('Books.delete', $book->id) }}" method="POST" style="display:inline-block;" onsubmit="return confirm('Yakin ingin hapus?')">
+            @csrf @method('DELETE')
+            <button type="submit" class="btn btn-sm btn-danger">Hapus</button>
+          </form>
+        </td>
+      </tr>
+      @empty
+      <tr>
+        <td colspan="10" class="text-center">Belum ada data buku.</td>
+      </tr>
+      @endforelse
+    </tbody>
+  </table>
+</div>
+
 
   </div>
 </main>
@@ -196,16 +169,13 @@
 @include('layout.footer')
 
 <script>
-  document.querySelectorAll('.editPromo').forEach(button => {
-    button.addEventListener('click', function () {
-      document.getElementById('promo_id').value = this.dataset.id;
-      document.getElementById('kode_promo').value = this.dataset.id;
-      document.getElementById('type').value = this.dataset.type;
-      document.getElementById('discount').value = this.dataset.discount;
-      document.getElementById('start_date').value = this.dataset.start;
-      document.getElementById('end_date').value = this.dataset.end;
-    });
-  });
+  function toggleFields() {
+    let type = document.getElementById('type').value;
+    document.getElementById('fileField').style.display = type === 'digital' ? 'block' : 'none';
+    document.getElementById('rakField').style.display = type === 'fisik' ? 'block' : 'none';
+  }
+
+  window.addEventListener('load', toggleFields);
 </script>
 
 @endsection

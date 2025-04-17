@@ -4,6 +4,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AuthorController;
 use App\Http\Controllers\KategoriController;
+use App\Http\Controllers\GuestController;
+use App\Http\Controllers\BooksController;
+use App\Http\Controllers\TopupController;
 use App\Http\Controllers\MemberController;
 use App\Http\Controllers\PromoController;
 use App\Http\Controllers\PublisherController;
@@ -21,9 +24,19 @@ use App\Http\Controllers\SettingsController;
 |
 */
 
+// Route::get('/', function () {
+//     return redirect()->route('guest.dashboard');
+// });
+
 Route::get('/', function () {
     return redirect()->route('login');
 });
+
+Route::get('/dashboard', [GuestController::class, 'index'])->name('guest.dashboard');
+
+Route::get('/Books', [GuestController::class, 'indexBooks'])->name('guest.books');
+
+
 
 // Rute login hanya untuk pengguna yang belum login
 Route::get('/login', [AuthController::class, 'index'])
@@ -78,11 +91,19 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/invoice', [UsersController::class, 'invoicePetugas'])->name('users.petugas.invoice');
     });    
 
-    //Route Users Member
-    Route::get('/Member', [MemberController::class, 'index'])->name('Member.index');
-    Route::post('/Member', [MemberController::class, 'store'])->name('Member.store');
-    Route::delete('/Member/{id}', [MemberController::class, 'delete'])->name('Member.delete');
-    Route::get('/Member/invoice', [MemberController::class, 'invoice'])->name('Member.invoice');
+    // Route Member
+    Route::prefix('Member')->name('Member.')->group(function () {
+        Route::get('/', [MemberController::class, 'index'])->name('index');
+        Route::post('/', [MemberController::class, 'store'])->name('store');
+        Route::delete('/{id}', [MemberController::class, 'delete'])->name('delete');
+        Route::get('/invoice', [MemberController::class, 'invoice'])->name('invoice');
+        
+        // Sudah ada sebelumnya:
+        Route::get('/books', [BooksController::class, 'indexMember'])->name('Books.index');
+        Route::get('/promo', [PromoController::class, 'indexMember'])->name('Promo.index');
+        Route::get('/peminjaman', [MemberController::class, 'riwayatPeminjaman'])->name('Peminjaman.index');
+        Route::get('/pengembalian', [MemberController::class, 'riwayatPengembalian'])->name('Pengembalian.index');
+    });
     
     //Route Settings
     Route::get('/Settings', [SettingsController::class, 'index'])->name('Settings');
@@ -112,26 +133,38 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/invoice', [PublisherController::class, 'invoice'])->name('invoice');
     });
 
+    //Route Books
+    Route::prefix('Books')->group(function () {
+        Route::get('/', [BooksController::class, 'indexBooks'])->name('Books.index');
+        Route::get('/member', [BooksController::class, 'indexMember'])->name('Member.books.index');
+        Route::post('/store', [BooksController::class, 'storeBooks'])->name('Books.store');
+        Route::put('/{id}', [BooksController::class, 'storeBooks'])->name('Books.update');
+        Route::delete('/{id}', [BooksController::class, 'delete'])->name('Books.delete');
+        Route::get('/invoice', [BooksController::class, 'invoice'])->name('Books.invoice');
+    });
+
+    // Top Up Route
+    Route::prefix('Topup')->name('Topup.')->group(function () {
+        Route::get('/', [TopupController::class, 'index'])->name('index');
+        Route::get('/member', [TopupController::class, 'indexMember'])->name('member.index');
+        Route::post('/proses', [TopupController::class, 'store'])->name('store');
+        Route::put('/{kode_topups}/status', [TopupController::class, 'updateStatus'])->name('updateStatus'); // Perbaikan di sini
+        Route::post('/invoice', [TopupController::class, 'invoiceTopup'])->name('invoice');
+    });
+
     // Route Promo
     Route::prefix('Promo')->name('Promo.')->group(function () {
         Route::get('/', [PromoController::class, 'index'])->name('index');
-        Route::post('/', [PromoController::class, 'store'])->name('store');
+        Route::get('/member', [PromoController::class, 'index'])->name('member.index');
+        Route::post('/store', [PromoController::class, 'store'])->name('store');
         Route::delete('/{id}', [PromoController::class, 'delete'])->name('delete');
         Route::get('/invoice', [PromoController::class, 'invoice'])->name('invoice');
-    });
-
-    //Route Books
-    Route::prefix('Books')->group(function () {
-        Route::get('/', [UsersController::class, 'indexBooks'])->name('Books.index');
-        Route::post('/store', [UsersController::class, 'storeBooks'])->name('Books.store');
-        Route::put('/{id}', [UsersController::class, 'storeBooks'])->name('Books.update');
-        Route::delete('/{id}', [UsersController::class, 'delete'])->name('Books.delete');
-        Route::get('/invoice', [UsersController::class, 'invoice'])->name('Books.invoice');
     });
 
     //Route Peminjaman
     Route::prefix('Peminjaman')->group(function () {
         Route::get('/', [UsersController::class, 'indexPeminjaman'])->name('Peminjaman.index');
+        Route::get('/member', [UsersController::class, 'indexPeminjaman'])->name('Member.peminjaman.index');
         Route::post('/store', [UsersController::class, 'storePeminjaman'])->name('Peminjaman.store');
         Route::put('/{id}', [UsersController::class, 'storePeminjaman'])->name('Peminjaman.update');
         Route::delete('/{id}', [UsersController::class, 'delete'])->name('Peminjaman.delete');
@@ -141,6 +174,7 @@ Route::middleware(['auth'])->group(function () {
     //Route Pengembalian
     Route::prefix('Pengembalian')->group(function () {
         Route::get('/', [UsersController::class, 'indexPengembalian'])->name('Pengembalian.index');
+        Route::get('/member', [UsersController::class, 'indexPeminjaman'])->name('Member.peminjaman.index');
         Route::post('/store', [UsersController::class, 'storePengembalian'])->name('Pengembalian.store');
         Route::put('/{id}', [UsersController::class, 'storePengembalian'])->name('Pengembalian.update');
         Route::delete('/{id}', [UsersController::class, 'delete'])->name('Pengembalian.delete');

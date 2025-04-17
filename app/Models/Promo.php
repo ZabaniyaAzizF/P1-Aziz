@@ -22,19 +22,20 @@ class Promo extends Model
         'end_date',
     ];
 
-    public function kategori()
-    {
-        return $this->belongsTo(Kategori::class, 'kode_kategori', 'kode_kategori');
+    public function Books() {
+        return $this->belongsToMany(Book::class, 'promo_books', 'kode_promo', 'kode_buku');
     }
     
-    public function author()
-    {
-        return $this->belongsTo(Author::class, 'kode_author', 'kode_author');
+    public function Kategori() {
+        return $this->belongsToMany(Kategori::class, 'promo_kategori', 'kode_promo', 'kode_kategori');
     }
     
-    public function publisher()
-    {
-        return $this->belongsTo(Publisher::class, 'kode_publisher', 'kode_publisher');
+    public function Publisher() {
+        return $this->belongsToMany(Publisher::class, 'promo_publisher', 'kode_promo', 'kode_publisher');
+    }
+    
+    public function Author() {
+        return $this->belongsToMany(Author::class, 'promo_author', 'kode_promo', 'kode_author');
     }
     
     public function member()

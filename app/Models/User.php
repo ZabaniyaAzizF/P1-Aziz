@@ -46,4 +46,10 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    // Relasi satu user memiliki banyak top up
+    public function topUps()
+    {
+        return $this->hasMany(Top_ups::class, 'user_id', 'id');
+    }
 }

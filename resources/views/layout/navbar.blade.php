@@ -113,6 +113,7 @@
             <a class="dropdown-item  gap-2 py-2" href="javascript:;">
               <div class="text-center">
                 <i class="material-icons-outlined fs-2">person</i>
+                @auth
                 <h5 class="user-name mb-0 fw-bold">Hello, {{ Auth::user()->name }}</h5>
                 @php
                     $user = Auth::user();
@@ -125,7 +126,10 @@
                     $roleColor = $roleColors[$user->role] ?? 'dark';
                 @endphp
                 <span class="badge bg-{{ $roleColor }}">{{ ucfirst($user->role) }}</span>
-              </div>
+            @else
+                <h5 class="user-name mb-0 fw-bold">Hello, Guest</h5>
+                <span class="badge bg-dark">Guest</span>
+            @endauth            
             </a>
             <hr class="dropdown-divider">
             <a class="dropdown-item d-flex align-items-center gap-2 py-2" href="javascript:;"><i

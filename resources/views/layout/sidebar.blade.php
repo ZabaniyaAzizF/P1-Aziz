@@ -14,64 +14,146 @@
   </div>
   <div class="sidebar-nav">
     <ul class="metismenu" id="sidenav">
-      <li>
-        <a href="{{ route('Dashboard') }}">
-          <div class="parent-icon"><i class="material-icons-outlined">dashboard</i></div>
-          <div class="menu-title">Dashboard</div>
-        </a>
-      </li>
+      @auth
+        @php
+          $user = auth()->user();
 
-      <li class="menu-label">Menu</li>
-      @if (in_array(auth()->user()->role, ['Admin', 'Petugas', 'Supervisor']))
-      <li>
-        <a class="has-arrow" href="javascript:void(0);">
-          <div class="parent-icon"><i class="material-icons-outlined">manage_accounts</i></div>
-          <div class="menu-title">Manajemen Data</div>
-        </a>
-        <ul>
-          <li><a href="{{ route('Kategori.index') }}"><i class="material-icons-outlined">category</i> Kategori</a></li>
-          <li><a href="{{ route('Author.index') }}"><i class="material-icons-outlined">person</i> Author</a></li>
-          <li><a href="{{ route('Publisher.index') }}"><i class="material-icons-outlined">apartment</i> Publisher</a></li>
-          <li><a href="{{ route('Member.index') }}"><i class="material-icons-outlined">groups</i> Member</a></li>
-          <li><a href="{{ route('Promo.index') }}"><i class="material-icons-outlined">local_offer</i> Promo</a></li>
-          <li><a href="{{ route('Books.index') }}"><i class="material-icons-outlined">book</i> Books</a></li>
-          <li><a href="{{ route('Peminjaman.index') }}"><i class="material-icons-outlined">shopping_cart_checkout</i> Peminjaman</a></li>
-          <li><a href="{{ route('Pengembalian.index') }}"><i class="material-icons-outlined">assignment_return</i> Pengembalian</a></li>
-        </ul>
-      </li>
-      @endif
+          $menu = [];
 
-      @if (in_array(auth()->user()->role, ['Admin', 'Petugas', 'Supervisor', 'Member']))
-      <li>
-        <a class="has-arrow" href="javascript:void(0);">
-          <div class="parent-icon"><i class="material-icons-outlined">point_of_sale</i></div>
-          <div class="menu-title">Transaksi</div>
-        </a>
-        <ul>
-          <li><a href="{{ route('Promo.index') }}"><i class="material-icons-outlined">local_offer</i> Promo</a></li>
-          <li><a href="{{ route('Books.index') }}"><i class="material-icons-outlined">book</i> Books</a></li>
-          <li><a href="{{ route('Peminjaman.index') }}"><i class="material-icons-outlined">shopping_cart_checkout</i> Peminjaman</a></li>
-          <li><a href="{{ route('Pengembalian.index') }}"><i class="material-icons-outlined">assignment_return</i> Pengembalian</a></li>
-        </ul>
-      </li>
-      @endif
+          // Dashboard selalu muncul
+          $menu[] = [
+            'label' => null,
+            'items' => [
+              [
+                'title' => 'Dashboard',
+                'icon' => 'dashboard',
+                'route' => 'Dashboard',
+              ],
+            ]
+          ];
 
-      @if (auth()->user()->role == 'Admin')
-      <li class="menu-label">Pengaturan Admin</li>
-      <li>
-        <a class="has-arrow" href="javascript:void(0);">
-          <div class="parent-icon"><i class="material-icons-outlined">admin_panel_settings</i></div>
-          <div class="menu-title">Pengaturan</div>
-        </a>
-        <ul>
-          <li><a href="{{ route('users.index') }}"><i class="material-icons-outlined">people</i> Semua Users</a></li>
-          <li><a href="{{ route('users.admin.index') }}"><i class="material-icons-outlined">security</i> Users Admin</a></li>
-          <li><a href="{{ route('users.supervisor.index') }}"><i class="material-icons-outlined">supervised_user_circle</i> Users Supervisor</a></li>
-          <li><a href="{{ route('users.petugas.index') }}"><i class="material-icons-outlined">badge</i> Users Petugas</a></li>
-          <li><a href="{{ route('Settings') }}"><i class="material-icons-outlined">settings_applications</i> Settings</a></li>
-        </ul>
-      </li>
-      @endif      
+          // Menu Manajemen Data
+          if (in_array($user->role, ['Admin', 'Petugas', 'Supervisor'])) {
+            $menu[] = [
+              'label' => 'Menu',
+              'items' => [
+                [
+                  'title' => 'Manajemen Data',
+                  'icon' => 'manage_accounts',
+                  'children' => [
+                    ['title' => 'Kategori', 'icon' => 'category', 'route' => 'Kategori.index'],
+                    ['title' => 'Author', 'icon' => 'person', 'route' => 'Author.index'],
+                    ['title' => 'Publisher', 'icon' => 'apartment', 'route' => 'Publisher.index'],
+                    ['title' => 'Member', 'icon' => 'groups', 'route' => 'Member.index'],
+                    ['title' => 'Books', 'icon' => 'book', 'route' => 'Books.index'],
+                    ['title' => 'Promo', 'icon' => 'local_offer', 'route' => 'Promo.index'],
+                  ]
+                ]
+              ]
+            ];
+          }
+
+          // Transaksi berdasarkan role
+          if (in_array($user->role, ['Admin', 'Petugas', 'Supervisor'])) {
+            $menu[] = [
+              'label' => null,
+              'items' => [
+                [
+                  'title' => 'Transaksi',
+                  'icon' => 'point_of_sale',
+                  'children' => [
+                    ['title' => 'Top Up', 'icon' => 'local_offer', 'route' => 'Topup.index'],
+                    ['title' => 'Peminjaman', 'icon' => 'shopping_cart_checkout', 'route' => 'Peminjaman.index'],
+                    ['title' => 'Pengembalian', 'icon' => 'assignment_return', 'route' => 'Pengembalian.index'],
+                  ]
+                ]
+              ]
+            ];
+          }
+
+          if ($user->role === 'Member') {
+            $menu[] = [
+              'label' => null,
+              'items' => [
+                [
+                  'title' => 'Transaksi',
+                  'icon' => 'point_of_sale',
+                  'children' => [
+                    ['title' => 'Buku', 'icon' => 'book', 'route' => 'Member.books.index'],
+                    ['title' => 'Promo ', 'icon' => 'local_offer', 'route' => 'Promo.member.index'],
+                    ['title' => 'Top Up', 'icon' => 'local_offer', 'route' => 'Topup.member.index'],
+                    ['title' => 'Riwayat Peminjaman', 'icon' => 'shopping_cart_checkout', 'route' => 'Member.Peminjaman.index'],
+                    ['title' => 'Riwayat Pengembalian', 'icon' => 'assignment_return', 'route' => 'Member.Pengembalian.index'],
+                  ]
+                ]
+              ]
+            ];
+          }
+
+          // Pengaturan Admin
+          if ($user->role === 'Admin') {
+            $menu[] = [
+              'label' => 'Pengaturan Admin',
+              'items' => [
+                [
+                  'title' => 'Pengaturan',
+                  'icon' => 'admin_panel_settings',
+                  'children' => [
+                    ['title' => 'Semua Users', 'icon' => 'people', 'route' => 'users.index'],
+                    ['title' => 'Users Admin', 'icon' => 'security', 'route' => 'users.admin.index'],
+                    ['title' => 'Users Supervisor', 'icon' => 'supervised_user_circle', 'route' => 'users.supervisor.index'],
+                    ['title' => 'Users Petugas', 'icon' => 'badge', 'route' => 'users.petugas.index'],
+                    ['title' => 'Settings', 'icon' => 'settings_applications', 'route' => 'Settings'],
+                  ]
+                ]
+              ]
+            ];
+          }
+        @endphp
+
+        {{-- Looping Sidebar --}}
+        @foreach ($menu as $section)
+          @if ($section['label'])
+            <li class="menu-label">{{ $section['label'] }}</li>
+          @endif
+          @foreach ($section['items'] as $item)
+            @if (isset($item['children']))
+              <li>
+                <a class="has-arrow" href="javascript:void(0);">
+                  <div class="parent-icon"><i class="material-icons-outlined">{{ $item['icon'] }}</i></div>
+                  <div class="menu-title">{{ $item['title'] }}</div>
+                </a>
+                <ul>
+                  @foreach ($item['children'] as $child)
+                    <li>
+                      <a href="{{ route($child['route']) }}">
+                        <i class="material-icons-outlined">{{ $child['icon'] }}</i> {{ $child['title'] }}
+                      </a>
+                    </li>
+                  @endforeach
+                </ul>
+              </li>
+            @else
+              <li>
+                <a href="{{ route($item['route']) }}">
+                  <div class="parent-icon"><i class="material-icons-outlined">{{ $item['icon'] }}</i></div>
+                  <div class="menu-title">{{ $item['title'] }}</div>
+                </a>
+              </li>
+            @endif
+          @endforeach
+        @endforeach
+      @endauth    
+
+      @guest
+        {{-- Menu untuk Guest --}}
+        <li>
+          <a href="{{ route('Books.index') }}">
+            <div class="parent-icon"><i class="material-icons-outlined">book</i></div>
+            <div class="menu-title">Books</div>
+          </a>
+        </li>
+      @endguest
     </ul>
   </div>
 </aside>
