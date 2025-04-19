@@ -133,15 +133,20 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/invoice', [PublisherController::class, 'invoice'])->name('invoice');
     });
 
-    //Route Books
+    // Route Books
     Route::prefix('Books')->group(function () {
         Route::get('/', [BooksController::class, 'indexBooks'])->name('Books.index');
         Route::get('/member', [BooksController::class, 'indexMember'])->name('Member.books.index');
-        Route::post('/store', [BooksController::class, 'storeBooks'])->name('Books.store');
-        Route::put('/{id}', [BooksController::class, 'storeBooks'])->name('Books.update');
-        Route::delete('/{id}', [BooksController::class, 'delete'])->name('Books.delete');
+    
+        Route::post('/', [BooksController::class, 'storeBooks'])->name('Books.store');
+    
+        // Ganti {id} menjadi {kode_books} untuk konsisten
+        Route::put('/{kode_books}', [BooksController::class, 'update'])->name('Books.update');
+    
+        Route::delete('/{kode_books}', [BooksController::class, 'delete'])->name('Books.delete');
+    
         Route::get('/invoice', [BooksController::class, 'invoice'])->name('Books.invoice');
-    });
+    });    
 
     // Top Up Route
     Route::prefix('Topup')->name('Topup.')->group(function () {

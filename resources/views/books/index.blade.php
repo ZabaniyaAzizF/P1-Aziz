@@ -1,203 +1,346 @@
 @extends('layout.template')
-
 @section('content')
 
 @include('layout.navbar')
 @include('layout.sidebar')
 
+<!-- Start Main Wrapper -->
 <main class="main-wrapper">
-    <div class="main-content">
-
-        <!-- Breadcrumb -->
-        <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
-            <div class="breadcrumb-title pe-3">Data Buku</div>
-            <div class="ms-auto">
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb mb-0 p-0">
-                        <li class="breadcrumb-item"><a href="#"><i class="bx bx-home-alt"></i></a></li>
-                        <li class="breadcrumb-item active" aria-current="page">Form Buku</li>
-                    </ol>
-                </nav>
-            </div>
-        </div>
-
-        <div class="card">
-            <div class="card-body p-4">
-                <h5 class="mb-4">{{ isset($book) ? 'Edit Buku' : 'Tambah Buku' }}</h5>
-
-                <form action="{{ isset($book) ? route('Books.update', $book->id) : route('Books.store') }}" method="POST" enctype="multipart/form-data">
-                    @csrf
-                    @if(isset($book)) @method('PUT') @endif
-                    <input type="hidden" id="author_id" name="author_id">
-                    
-                    <?php $kodebooks = autonumber('books', 'kode_books', 5, 'BOK'); ?>
-
-                    <!-- Kode Buku dan Judul Buku -->
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label for="kode_books" class="form-label">Kode Buku</label>
-                                <input type="text" class="form-control" id="kode_books" name="kode_books" readonly value="<?= $kodebooks ?>" required>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label for="title" class="form-label">Judul Buku</label>
-                                <input type="text" class="form-control" id="title" name="title" value="{{ old('title', $book->title ?? '') }}" required>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Kategori dan Penerbit -->
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label for="kode_kategori" class="form-label">Kategori</label>
-                                <select class="form-select" name="kode_kategori" id="kode_kategori" required>
-                                    <option value="">Pilih Kategori</option>
-                                    @foreach($kategoriList as $kategori)
-                                        <option value="{{ $kategori->kode_kategori }}" {{ (isset($book) && $book->kode_kategori == $kategori->kode_kategori) ? 'selected' : '' }}>
-                                            {{ $kategori->nama_kategori }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label for="kode_publisher" class="form-label">Penerbit</label>
-                                <select class="form-select" name="kode_publisher" id="kode_publisher" required>
-                                    <option value="">Pilih Penerbit</option>
-                                    @foreach($publisherList as $publisher)
-                                        <option value="{{ $publisher->kode_publisher }}" {{ (isset($book) && $book->kode_publisher == $publisher->kode_publisher) ? 'selected' : '' }}>
-                                            {{ $publisher->nama_publisher }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Pengarang dan Tipe Buku -->
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label for="kode_author" class="form-label">Pengarang</label>
-                                <select class="form-select" name="kode_author" id="kode_author" required>
-                                    <option value="">Pilih Pengarang</option>
-                                    @foreach($authorList as $author)
-                                        <option value="{{ $author->kode_author }}" {{ (isset($book) && $book->kode_author == $author->kode_author) ? 'selected' : '' }}>
-                                            {{ $author->nama_author }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label for="harga" class="form-label">Harga</label>
-                                <input type="number" class="form-control" id="harga" name="harga" value="{{ old('harga', $book->harga ?? '') }}" required>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- File Buku (Digital) dan Lokasi Rak (Fisik) -->
-                    <div class="row">
-                        <div class="col-md-6" id="fileField" style="display: none;">
-                            <div class="mb-3">
-                                <label for="file_url" class="form-label">File Buku (PDF)</label>
-                                <input type="file" class="form-control" id="file_url" name="file_url">
-                                @if(isset($book) && $book->file_url)
-                                    <small>File saat ini: <a href="{{ asset('storage/' . $book->file_url) }}" target="_blank">Lihat File</a></small>
-                                @endif
-                            </div>
-                        </div>
-                        <div class="col-md-6" id="rakField" style="display: none;">
-                            <div class="mb-3">
-                                <label for="lokasi_rak" class="form-label">Lokasi Rak</label>
-                                <input type="text" class="form-control" id="lokasi_rak" name="lokasi_rak" value="{{ old('lokasi_rak', $book->lokasi_rak ?? '') }}">
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Foto Buku -->
-                    <div class="mb-3">
-                        <label for="photo" class="form-label">Foto Buku</label>
-                        <input type="file" class="form-control" id="photo" name="photo">
-                        @if(isset($book) && $book->photo)
-                            <small>Foto saat ini: <img src="{{ asset('storage/' . $book->photo) }}" alt="foto" width="80"></small>
-                        @endif
-                    </div>
-
-                    <button type="submit" class="btn btn-primary">Simpan</button>
-                </form>
-            </div>
-        </div>
-
-        <hr class="my-5">
-
-        <h5 class="mb-3">Daftar Buku</h5>
-
-        <div class="table-responsive">
-            <table class="table table-bordered align-middle">
-                <thead class="table-light">
-                    <tr>
-                        <th>No</th>
-                        <th>Judul</th>
-                        <th>Kategori</th>
-                        <th>Penerbit</th>
-                        <th>Author</th>
-                        <th>Harga</th>
-                        <th>Foto</th>
-                        <th>Aksi</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse($books as $index => $book)
-                    <tr>
-                        <td>{{ $index + 1 }}</td>
-                        <td>{{ $book->title }}</td>
-                        <td>{{ $book->kategori->nama_kategori ?? '-' }}</td>
-                        <td>{{ $book->publisher->nama_publisher ?? '-' }}</td>
-                        <td>{{ $book->author->nama_author ?? '-' }}</td>
-                        <td>Rp{{ number_format($book->harga, 0, ',', '.') }}</td>
-                        <td>
-                            @if($book->photo)
-                                <img src="{{ asset('storage/' . $book->photo) }}" width="50" alt="Foto Buku">
-                            @else
-                                - 
-                            @endif
-                        </td>
-                        <td>
-                            <a href="{{ route('Books.edit', $book->kode_books) }}" class="btn btn-sm btn-warning">Edit</a>
-                            <form action="{{ route('Books.delete', $book->kode_books) }}" method="POST" style="display:inline-block;" onsubmit="return confirm('Yakin ingin hapus?')">
-                                @csrf @method('DELETE')
-                                <button type="submit" class="btn btn-sm btn-danger">Hapus</button>
-                            </form>
-                        </td>
-                    </tr>
-                    @empty
-                    <tr>
-                        <td colspan="10" class="text-center">Belum ada data buku.</td>
-                    </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
-
+  <div class="main-content">
+    <!-- Breadcrumb -->
+    <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
+      <div class="breadcrumb-title pe-3">Buku</div>
+      <div class="ms-auto">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb mb-0 p-0">
+            <li class="breadcrumb-item"><a href="#"><i class="bx bx-home-alt"></i></a></li>
+            <li class="breadcrumb-item active" aria-current="page">Buku</li>
+          </ol>
+        </nav>
+      </div>
     </div>
+    <!-- End Breadcrumb -->
+    
+    @if (auth()->user()->role == 'Admin' || auth()->user()->role == 'Petugas')
+    <div class="row">
+      <div class="col-12 col-lg-12">
+        <div class="card shadow-sm">
+          <div class="card-body p-4">
+            <h5 class="mb-4 text-primary">Add/Edit Buku</h5>
+
+            <form id="bookForm" action="{{ route('Books.store') }}" method="POST" enctype="multipart/form-data">
+            @csrf
+            <input type="hidden" id="book_id" name="book_id">
+            <?php $kodeBook = autonumber('books', 'kode_books', 5, 'BOK'); ?>
+
+            <!-- Kode Buku -->
+            <div class="row mb-3">
+                <label for="kode_books" class="col-sm-3 col-form-label">Kode Buku</label>
+                <div class="col-sm-9">
+                    <input type="text" class="form-control" id="kode_books" name="kode_books" readonly value="<?= $kodeBook ?>" required>
+                </div>
+            </div>
+
+            <!-- Judul Buku -->
+            <div class="row mb-3">
+                <label for="title" class="col-sm-3 col-form-label">Judul Buku</label>
+                <div class="col-sm-9">
+                    <input type="text" class="form-control" id="title" name="title" required>
+                </div>
+            </div>
+
+            <!-- Kategori -->
+            <div class="row mb-3">
+                <label for="kode_kategori" class="col-sm-3 col-form-label">Kategori</label>
+                <div class="col-sm-9">
+                    <select class="form-select" id="kode_kategori" name="kode_kategori" required>
+                        <option value="">-- Pilih Kategori --</option>
+                        @foreach ($kategori as $kat)
+                        <option value="{{ $kat->kode_kategori }}">{{ $kat->nama_kategori }}</option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+
+            <!-- Author -->
+            <div class="row mb-3">
+                <label for="kode_author" class="col-sm-3 col-form-label">Author</label>
+                <div class="col-sm-9">
+                    <select class="form-select" id="kode_author" name="kode_author" required>
+                        <option value="">-- Pilih Author --</option>
+                        @foreach ($authors as $auth)
+                        <option value="{{ $auth->kode_author }}">{{ $auth->nama_author }}</option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+
+            <!-- Publisher -->
+            <div class="row mb-3">
+                <label for="kode_publisher" class="col-sm-3 col-form-label">Publisher</label>
+                <div class="col-sm-9">
+                    <select class="form-select" id="kode_publisher" name="kode_publisher" required>
+                        <option value="">-- Pilih Publisher --</option>
+                        @foreach ($publishers as $pub)
+                        <option value="{{ $pub->kode_publisher }}">{{ $pub->nama_publisher }}</option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+
+            <!-- Harga -->
+            <div class="row mb-3">
+                <label for="harga" class="col-sm-3 col-form-label">Harga</label>
+                <div class="col-sm-9">
+                    <input type="number" class="form-control" id="harga" name="harga" step="0.01" required>
+                </div>
+            </div>
+
+            <!-- Link Buku (Optional) -->
+            <div class="row mb-3">
+                <label for="file_url" class="col-sm-3 col-form-label">Link Buku (Opsional)</label>
+                <div class="col-sm-9">
+                    <input type="url" class="form-control" id="file_url" name="file_url">
+                </div>
+            </div>
+
+            <!-- Upload File Buku -->
+            <div class="row mb-3">
+                <label for="file_book" class="col-sm-3 col-form-label">Upload File Buku</label>
+                <div class="col-sm-9">
+                    <input type="file" class="form-control" id="file_book" name="file_book">
+                </div>
+            </div>
+
+            <!-- Cover Buku -->
+            <div class="row mb-3">
+                <label for="photo" class="col-sm-3 col-form-label">Cover Buku</label>
+                <div class="col-sm-9">
+                    <input type="file" class="form-control" id="photo" name="photo">
+                </div>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="row">
+                <div class="col-sm-9 offset-sm-3">
+                    <button type="submit" class="btn btn-primary px-4">Simpan</button>
+                </div>
+            </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  @endif
+
+    <!-- Books Table -->
+    <h6 class="mb-3 text-uppercase">Books Table</h6>
+
+    <div class="card">
+    <div class="card-header bg-primary text-white">
+        <h5 class="mb-3">Daftar Buku</h5>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+        <table id="example2" class="table table-striped table-hover table-bordered">
+            <thead class="table-dark">
+            <tr>
+                <th>No</th>
+                <th>Title</th>
+                <th>Kategori</th>
+                <th>Author</th>
+                <th>Publisher</th>
+                <th>Harga</th>
+                <td>Photo</td>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach ($books as $book)
+            <tr>
+                <td>{{ $loop->iteration }}</td>
+                <td>{{ $book->title }}</td>
+                <td>{{ $book->kategori->nama_kategori }}</td>
+                <td>{{ $book->author->nama_author }}</td>
+                <td>{{ $book->publisher->nama_publisher }}</td>
+                <td>Rp {{ number_format($book->harga, 0, ',', '.') }}</td>
+                <td>
+                    <img src="{{ asset('storage/uploads/books/photo/' . $book->photo) }}" width="50" class="img-thumbnail" data-bs-toggle="modal" data-bs-target="#photoModal" data-bs-src="{{ asset('storage/uploads/books/photo/' . $book->photo) }}">
+                </td>                
+                <td>
+                    <button type="button" class="btn btn-warning btn-sm btn-edit" 
+                    data-id="{{ $book->kode_books }}"
+                    data-title="{{ $book->title }}"
+                    data-kategori="{{ $book->kategori->kode_kategori }}"
+                    data-author="{{ $book->author->kode_author }}"
+                    data-publisher="{{ $book->publisher->kode_publisher }}"
+                    data-harga="{{ $book->harga }}"
+                    data-file_url="{{ $book->file_url }}">
+                    Edit
+                    </button>
+                    <button type="button" class="btn btn-info btn-sm btn-detail" 
+                    data-id="{{ $book->kode_books }}"
+                    data-title="{{ $book->title }}"
+                    data-kategori="{{ $book->kategori->nama_kategori }}"
+                    data-author="{{ $book->author->nama_author }}"
+                    data-publisher="{{ $book->publisher->nama_publisher }}"
+                    data-harga="{{ $book->harga }}"
+                    data-file_url="{{ $book->file_url }}"
+                    data-photo="{{ $book->photo ? asset('storage/' . $book->photo) : '' }}">
+                    Detail
+                    </button>   
+                <form action="{{ route('Books.delete', $book->kode_books) }}" method="POST" style="display:inline;">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this book?')">
+                    <i class="bx bx-trash"></i> Delete
+                    </button>
+                </form>
+                </td>
+            </tr>
+            @endforeach
+            </tbody>
+        </table>
+        </div>
+    </div>
+    </div>
+  </div>
 </main>
+<!-- End Main Wrapper -->
+<!-- Modal untuk menampilkan gambar besar -->
+<div class="modal fade" id="photoModal" tabindex="-1" aria-labelledby="photoModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="photoModalLabel">Cover Buku</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <img id="modalPhoto" src="" alt="Cover Buku" class="img-fluid w-100">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal Detail Buku -->
+<div class="modal fade" id="bookDetailModal" tabindex="-1" aria-labelledby="bookDetailModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="bookDetailModalLabel">Detail Buku</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <strong>Judul Buku:</strong>
+                    <p id="detailTitle"></p>
+                </div>
+                <div class="mb-3">
+                    <strong>Kategori:</strong>
+                    <p id="detailKategori"></p>
+                </div>
+                <div class="mb-3">
+                    <strong>Author:</strong>
+                    <p id="detailAuthor"></p>
+                </div>
+                <div class="mb-3">
+                    <strong>Publisher:</strong>
+                    <p id="detailPublisher"></p>
+                </div>
+                <div class="mb-3">
+                    <strong>Harga:</strong>
+                    <p id="detailHarga"></p>
+                </div>
+                <div class="mb-3">
+                    <strong>Link Buku:</strong>
+                    <p id="detailFileUrl"></p>
+                </div>
+            </div>            
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 @include('layout.footer')
-
 <script>
-    function toggleFields() {
-        let type = document.getElementById('type').value;
-        document.getElementById('fileField').style.display = type === 'digital' ? 'block' : 'none';
-        document.getElementById('rakField').style.display = type === 'fisik' ? 'block' : 'none';
-    }
+    document.querySelector('table').addEventListener('click', function(event) {
+        if (event.target && event.target.classList.contains('btn-edit')) {
+            const kode_books = event.target.dataset.id;
+            const title = event.target.dataset.title;
+            const kode_kategori = event.target.dataset.kategori;
+            const kode_author = event.target.dataset.author;
+            const kode_publisher = event.target.dataset.publisher;
+            const harga = event.target.dataset.harga;
+            const file_url = event.target.dataset.file_url;
+            const photo = event.target.dataset.photo;
 
-    window.addEventListener('load', toggleFields);
-</script>
+            // Isi form edit
+            document.getElementById('kode_books').value = kode_books;
+            document.getElementById('title').value = title;
+            document.getElementById('harga').value = harga;
+            document.getElementById('file_url').value = file_url;
+
+            // Set selected option
+            document.querySelector('#kode_kategori option[value="' + kode_kategori + '"]').selected = true;
+            document.querySelector('#kode_author option[value="' + kode_author + '"]').selected = true;
+            document.querySelector('#kode_publisher option[value="' + kode_publisher + '"]').selected = true;
+
+            // Ubah action ke update
+            const updateUrl = "/Books/" + kode_books;
+            document.getElementById('bookForm').setAttribute('action', updateUrl);
+
+            // Tambahkan method PUT jika belum ada
+            if (!document.querySelector('#bookForm input[name="_method"]')) {
+                const methodInput = document.createElement('input');
+                methodInput.setAttribute('type', 'hidden');
+                methodInput.setAttribute('name', '_method');
+                methodInput.setAttribute('value', 'PUT');
+                document.getElementById('bookForm').appendChild(methodInput);
+            }
+        }
+
+        if (event.target && event.target.classList.contains('btn-detail')) {
+            const title = event.target.dataset.title;
+            const kategori = event.target.dataset.kategori;
+            const author = event.target.dataset.author;
+            const publisher = event.target.dataset.publisher;
+            const harga = event.target.dataset.harga;
+            const file_url = event.target.dataset.file_url;
+            const photo = event.target.dataset.photo;
+
+            document.getElementById('detailTitle').innerText = title;
+            document.getElementById('detailKategori').innerText = kategori;
+            document.getElementById('detailAuthor').innerText = author;
+            document.getElementById('detailPublisher').innerText = publisher;
+            document.getElementById('detailHarga').innerText = 'Rp ' + Number(harga).toLocaleString('id-ID');
+
+            if (file_url) {
+                document.getElementById('detailFileUrl').innerHTML = `<a href="${file_url}" target="_blank">${file_url}</a>`;
+            } else {
+                document.getElementById('detailFileUrl').innerText = '-';
+            }
+
+            const modal = new bootstrap.Modal(document.getElementById('bookDetailModal'));
+            modal.show();
+        }
+    });
+
+    document.querySelector('table').addEventListener('click', function(event) {
+        if (event.target && event.target.classList.contains('img-thumbnail')) {
+            const imageUrl = event.target.getAttribute('data-bs-src');
+            document.getElementById('modalPhoto').setAttribute('src', imageUrl);
+        }
+    });
+
+    // Menangani klik tombol batal
+    document.getElementById('cancelEdit').addEventListener('click', function() {
+        document.getElementById('bookForm').reset();  // Reset form
+        document.getElementById('kode_books').value = '';  // Kosongkan kode buku
+    });
+</script>  
 
 @endsection

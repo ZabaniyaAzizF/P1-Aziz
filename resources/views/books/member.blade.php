@@ -21,6 +21,34 @@
             </div>
         </div>
 
+        <!-- Form Filter -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <select id="categoryFilter" class="form-select">
+                    <option value="">Semua Kategori</option>
+                    @foreach($kategoriList as $category)
+                        <option value="{{ $category->kode_kategori }}">{{ $category->nama_kategori }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="col-md-3">
+                <select id="publisherFilter" class="form-select">
+                    <option value="">Semua Penerbit</option>
+                    @foreach($publisherList as $publisher)
+                        <option value="{{ $publisher->kode_publisher }}">{{ $publisher->nama_publisher }}</option>
+                    @endforeach
+                </select>
+            </div>
+            {{-- <div class="col-md-3">
+                <select id="publisherFilter" class="form-select">
+                    <option value="">Semua Author</option>
+                    @foreach(authorList as $author)
+                        <option value="{{ $author->kode_author }}">{{ $author->nama_author }}</option>
+                    @endforeach
+                </select>
+            </div> --}}
+        </div>
+
         <hr class="my-5">
 
         <h5 class="mb-3">Daftar Buku</h5>
@@ -29,7 +57,7 @@
             @forelse($books as $book)
             <div class="col-md-3 mb-4">
                 <div class="card h-100 shadow-sm">
-                    <img src="{{ asset('storage/' . $book->photo) }}" class="card-img-top" alt="Foto Buku" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#bookModal{{ $book->kode_books }}">
+                    <img src="{{ asset('storage/uploads/books/photo/' . $book->photo) }}" class="card-img-top" alt="Foto Buku" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#bookModal{{ $book->kode_books }}">
                 </div>
             </div>
 
@@ -43,7 +71,7 @@
                         </div>
                         <div class="modal-body row">
                             <div class="col-md-4">
-                                <img src="{{ asset('storage/' . $book->photo) }}" class="img-fluid" alt="Foto Buku">
+                                <img src="{{ asset('storage/uploads/books/photo/' . $book->photo) }}" class="img-fluid" alt="Foto Buku">
                             </div>
                             <div class="col-md-8">
                                 <ul class="list-group list-group-flush">
@@ -51,7 +79,7 @@
                                     <li class="list-group-item"><strong>Penerbit:</strong> {{ $book->publisher->nama_publisher ?? '-' }}</li>
                                     <li class="list-group-item"><strong>Pengarang:</strong> {{ $book->author->nama_author ?? '-' }}</li>
                                     <li class="list-group-item"><strong>Harga:</strong> Rp{{ number_format($book->harga, 0, ',', '.') }}</li>
-                                    <li class="list-group-item"><strong>File Buku:</strong> <a href="{{ asset('storage/' . $book->file_book) }}" target="_blank">Lihat File</a></li>
+                                    <li class="list-group-item"><strong>File Buku:</strong> <a href="{{ asset('storage/uploads/books/pdf/' . $book->file_book) }}" target="_blank">Lihat File</a></li>
                                 </ul>
                             </div>
                         </div>
@@ -74,13 +102,33 @@
 @include('layout.footer')
 
 <script>
-    function toggleFields() {
-        let type = document.getElementById('type').value;
-        document.getElementById('fileField').style.display = type === 'digital' ? 'block' : 'none';
-        document.getElementById('rakField').style.display = type === 'fisik' ? 'block' : 'none';
-    }
+    document.getElementById('categoryFilter').addEventListener('change', applyFilter);
+    document.getElementById('publisherFilter').addEventListener('change', applyFilter);
 
-    window.addEventListener('load', toggleFields);
+    function applyFilter() {
+        let category = document.getElementById('categoryFilter').value;
+        let publisher = document.getElementById('publisherFilter').value;
+
+        // Construct the URL with query parameters
+        let url = new URL('{{ url("Books/member") }}'); // Using Blade to get the base URL
+        let params = new URLSearchParams(url.search); // Get current query parameters if any
+
+        // Set or update the query parameters
+        if (category) {
+            params.set('category', category);
+        } else {
+            params.delete('category');
+        }
+
+        if (publisher) {
+            params.set('publisher', publisher);
+        } else {
+            params.delete('publisher');
+        }
+
+        // Reload the page with the updated query parameters
+        window.location.href = url.origin + url.pathname + '?' + params.toString();
+    }
 </script>
 
 @endsection

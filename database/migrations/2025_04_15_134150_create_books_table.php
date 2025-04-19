@@ -15,8 +15,8 @@ return new class extends Migration
             $table->string('kode_author', 6);
             $table->string('kode_publisher', 6);
             $table->decimal('harga', 10, 2);
-            $table->string('file_url');
-            $table->string('file_book');
+            $table->string('file_url')->nullable();
+            $table->string('file_book')->nullable();
             $table->string('photo')->nullable();
             $table->timestamps();
 
