@@ -7,161 +7,135 @@
 <main class="main-wrapper">
   <div class="main-content">
 
-    <!-- Breadcrumb -->
     <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
-      <div class="breadcrumb-title pe-3">Data Buku</div>
+      <div class="breadcrumb-title pe-3">Promo Buku</div>
       <div class="ms-auto">
         <nav aria-label="breadcrumb">
           <ol class="breadcrumb mb-0 p-0">
             <li class="breadcrumb-item"><a href="#"><i class="bx bx-home-alt"></i></a></li>
-            <li class="breadcrumb-item active" aria-current="page">Form Buku</li>
+            <li class="breadcrumb-item active" aria-current="page">Promo</li>
           </ol>
         </nav>
       </div>
     </div>
 
-    <div class="card">
-      <div class="card-body p-4">
-        <h5 class="mb-4">{{ isset($book) ? 'Edit Buku' : 'Tambah Buku' }}</h5>
-
-        <form action="{{ isset($book) ? route('Books.update', $book->id) : route('Books.store') }}" method="POST" enctype="multipart/form-data">
+    @if (auth()->user()->role == 'Admin' || auth()->user()->role == 'Petugas')
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h5 class="mb-4 text-primary">Tambah/Edit Promo</h5>
+        <form id="promoForm" action="{{ route('Promo.store') }}" method="POST">
           @csrf
-          @if(isset($book)) @method('PUT') @endif
+          <input type="hidden" id="kode_promo" name="kode_promo" value="{{ old('kode_promo', $kodePromo ?? '') }}">
+          <?php $kodePromo = autonumber('promos', 'kode_promo', 3, 'PRM'); ?>
 
+          <!-- Kode Promo -->
           <div class="mb-3">
-            <label for="title" class="form-label">Judul Buku</label>
-            <input type="text" class="form-control" id="title" name="title" value="{{ old('title', $book->title ?? '') }}" required>
+            <label for="kode_promo">Kode Promo</label>
+            <input type="text" class="form-control" name="kode_promo" readonly value="{{ $kodePromo }}">
           </div>
 
           <div class="mb-3">
-            <label for="kategori_id" class="form-label">Kategori</label>
-            <select class="form-select" name="kategori_id" id="kategori_id" required>
-              <option value="">Pilih Kategori</option>
-              @foreach($kategoriList as $kategori)
-                <option value="{{ $kategori->id }}" {{ (isset($book) && $book->kategori_id == $kategori->id) ? 'selected' : '' }}>{{ $kategori->nama_kategori }}</option>
-              @endforeach
+            <label for="nama">Nama Promo</label>
+            <input type="text" class="form-control" name="nama" required>
+          </div>
+
+          <!-- Type Promo -->
+          <div class="mb-3">
+            <label for="type">Type Promo</label>
+            <select class="form-select" name="type" id="type" required onchange="updateRefOptions()">
+              <option value="">-- Pilih Type --</option>
+              <option value="kategori">Kategori</option>
+              <option value="author">Author</option>
+              <option value="publisher">Publisher</option>
+              <option value="member">Member</option>
             </select>
           </div>
 
-          <div class="mb-3">
-            <label for="publisher_id" class="form-label">Penerbit</label>
-            <select class="form-select" name="publisher_id" id="publisher_id" required>
-              <option value="">Pilih Penerbit</option>
-              @foreach($publisherList as $publisher)
-                <option value="{{ $publisher->id }}" {{ (isset($book) && $book->publisher_id == $publisher->id) ? 'selected' : '' }}>{{ $publisher->nama_publisher }}</option>
-              @endforeach
+          <!-- Ref ID -->
+          <div class="mb-3" id="refSelectContainer">
+            <label for="ref_id">Referensi</label>
+            <select class="form-select" name="ref_id" id="ref_id" required>
+              <option value="">-- Pilih Referensi --</option>
             </select>
           </div>
 
+          <!-- Discount -->
           <div class="mb-3">
-            <label for="author_id" class="form-label">Pengarang</label>
-            <select class="form-select" name="author_id" id="author_id" required>
-              <option value="">Pilih Pengarang</option>
-              @foreach($authorList as $author)
-                <option value="{{ $author->id }}" {{ (isset($book) && $book->author_id == $author->id) ? 'selected' : '' }}>{{ $author->nama_author }}</option>
-              @endforeach
-            </select>
+            <label for="discount">Diskon (%)</label>
+            <input type="number" class="form-control" name="discount" required>
           </div>
 
-          <div class="mb-3">
-            <label for="type" class="form-label">Tipe Buku</label>
-            <select class="form-select" name="type" id="type" required onchange="toggleFields()">
-              <option value="fisik" {{ old('type', $book->type ?? '') == 'fisik' ? 'selected' : '' }}>Fisik</option>
-              <option value="digital" {{ old('type', $book->type ?? '') == 'digital' ? 'selected' : '' }}>Digital</option>
-            </select>
+          <!-- Tanggal -->
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <label for="start_date">Mulai</label>
+              <input type="date" class="form-control" name="start_date" required>
+            </div>
+            <div class="col-md-6">
+              <label for="end_date">Selesai</label>
+              <input type="date" class="form-control" name="end_date" required>
+            </div>
           </div>
 
-          <div class="mb-3" id="fileField" style="display: none;">
-            <label for="file_url" class="form-label">File Buku (PDF)</label>
-            <input type="file" class="form-control" id="file_url" name="file_url">
-            @if(isset($book) && $book->file_url)
-              <small>File saat ini: <a href="{{ asset('storage/' . $book->file_url) }}" target="_blank">Lihat File</a></small>
-            @endif
-          </div>
-
-          <div class="mb-3" id="rakField" style="display: none;">
-            <label for="lokasi_rak" class="form-label">Lokasi Rak</label>
-            <input type="text" class="form-control" id="lokasi_rak" name="lokasi_rak" value="{{ old('lokasi_rak', $book->lokasi_rak ?? '') }}">
-          </div>
-
-          <div class="mb-3">
-            <label for="harga" class="form-label">Harga</label>
-            <input type="number" class="form-control" id="harga" name="harga" value="{{ old('harga', $book->harga ?? '') }}" required>
-          </div>
-
-          <div class="mb-3">
-            <label for="stock" class="form-label">Stok</label>
-            <input type="number" class="form-control" id="stock" name="stock" value="{{ old('stock', $book->stock ?? '') }}" required>
-          </div>
-
-          <div class="mb-3">
-            <label for="photo" class="form-label">Foto Buku</label>
-            <input type="file" class="form-control" id="photo" name="photo">
-            @if(isset($book) && $book->photo)
-              <small>Foto saat ini: <img src="{{ asset('storage/' . $book->photo) }}" alt="foto" width="80"></small>
-            @endif
-          </div>
-
+          <!-- Button -->
           <button type="submit" class="btn btn-primary">Simpan</button>
         </form>
       </div>
     </div>
+    @endif
 
-    <hr class="my-5">
-
-<h5 class="mb-3">Daftar Buku</h5>
-
-<div class="table-responsive">
-  <table class="table table-bordered align-middle">
-    <thead class="table-light">
-      <tr>
-        <th>No</th>
-        <th>Judul</th>
-        <th>Kategori</th>
-        <th>Penerbit</th>
-        <th>Author</th>
-        <th>Tipe</th>
-        <th>Harga</th>
-        <th>Stok</th>
-        <th>Foto</th>
-        <th>Aksi</th>
-      </tr>
-    </thead>
-    <tbody>
-      @forelse($books as $index => $book)
-      <tr>
-        <td>{{ $index + 1 }}</td>
-        <td>{{ $book->title }}</td>
-        <td>{{ $book->kategori->nama_kategori ?? '-' }}</td>
-        <td>{{ $book->publisher->nama_publisher ?? '-' }}</td>
-        <td>{{ $book->author->nama_author ?? '-' }}</td>
-        <td>{{ ucfirst($book->type) }}</td>
-        <td>Rp{{ number_format($book->harga, 0, ',', '.') }}</td>
-        <td>{{ $book->stock }}</td>
-        <td>
-          @if($book->photo)
-            <img src="{{ asset('storage/' . $book->photo) }}" width="50" alt="Foto Buku">
-          @else
-            -
-          @endif
-        </td>
-        <td>
-          <a href="{{ route('Books.edit', $book->id) }}" class="btn btn-sm btn-warning">Edit</a>
-          <form action="{{ route('Books.delete', $book->id) }}" method="POST" style="display:inline-block;" onsubmit="return confirm('Yakin ingin hapus?')">
-            @csrf @method('DELETE')
-            <button type="submit" class="btn btn-sm btn-danger">Hapus</button>
-          </form>
-        </td>
-      </tr>
-      @empty
-      <tr>
-        <td colspan="10" class="text-center">Belum ada data buku.</td>
-      </tr>
-      @endforelse
-    </tbody>
-  </table>
-</div>
-
+    <!-- Tabel Promo -->
+    <div class="card mt-4">
+      <div class="card-header bg-primary text-white">
+        <h5 class="mb-0">Daftar Promo</h5>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-striped table-bordered">
+            <thead class="table-dark">
+              <tr>
+                <th>No</th>
+                <th>Kode Promo</th>
+                <th>Type</th>
+                <th>Referensi</th>
+                <th>Diskon</th>
+                <th>Periode</th>
+                <th>Aksi</th>
+              </tr>
+            </thead>
+            <tbody>
+              @foreach ($promos as $promo)
+              <tr>
+                <td>{{ $loop->iteration }}</td>
+                <td>{{ $promo->kode_promo }}</td>
+                <td>{{ ucfirst($promo->type) }}</td>
+                <td>
+                  @if ($promo->type == 'kategori')
+                    {{ $promo->kategori->nama_kategori }}
+                  @elseif ($promo->type == 'author')
+                    {{ $promo->author->nama_author }}
+                  @elseif ($promo->type == 'publisher')
+                    {{ $promo->publisher->nama_publisher }}
+                  @elseif ($promo->type == 'member')
+                    {{ $promo->member->name }}
+                  @endif
+                </td>
+                <td>{{ $promo->discount }}%</td>
+                <td>{{ $promo->start_date }} - {{ $promo->end_date }}</td>
+                <td>
+                  <!-- Edit & Delete -->
+                  <form action="{{ route('Promo.delete', $promo->kode_promo) }}" method="POST" onsubmit="return confirm('Yakin hapus promo ini?')" style="display:inline;">
+                    @csrf @method('DELETE')
+                    <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
+                  </form>
+                </td>
+              </tr>
+              @endforeach
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
 
   </div>
 </main>
@@ -169,13 +143,54 @@
 @include('layout.footer')
 
 <script>
-  function toggleFields() {
-    let type = document.getElementById('type').value;
-    document.getElementById('fileField').style.display = type === 'digital' ? 'block' : 'none';
-    document.getElementById('rakField').style.display = type === 'fisik' ? 'block' : 'none';
+  const kategori = @json($kategori);
+  const authors = @json($authors);
+  const publishers = @json($publishers);
+  const members = @json($members);
+
+  function updateRefOptions() {
+    const type = document.getElementById('type').value;
+    const refSelect = document.getElementById('ref_id');
+
+    let options = '<option value="">-- Pilih Referensi --</option>';
+    let data = [];
+
+    switch (type) {
+      case 'kategori':
+        data = kategori;
+        data.forEach(item => {
+          options += `<option value="${item.kode_kategori}">${item.nama_kategori}</option>`;
+        });
+        break;
+      case 'author':
+        data = authors;
+        data.forEach(item => {
+          options += `<option value="${item.kode_author}">${item.nama_author}</option>`;
+        });
+        break;
+      case 'publisher':
+        data = publishers;
+        data.forEach(item => {
+          options += `<option value="${item.kode_publisher}">${item.nama_publisher}</option>`;
+        });
+        break;
+      case 'member':
+        data = members;
+        data.forEach(item => {
+          options += `<option value="${item.id}">${item.name}</option>`;
+        });
+        break;
+      default:
+        // Kosongin kalau type tidak valid
+        break;
+    }
+
+    refSelect.innerHTML = options;
   }
 
-  window.addEventListener('load', toggleFields);
+  // Optional: isi otomatis jika value lama ada (untuk form edit)
+  document.addEventListener('DOMContentLoaded', function () {
+    updateRefOptions();
+  });
 </script>
-
 @endsection

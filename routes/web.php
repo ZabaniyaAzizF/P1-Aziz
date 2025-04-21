@@ -160,9 +160,15 @@ Route::middleware(['auth'])->group(function () {
     // Route Promo
     Route::prefix('Promo')->name('Promo.')->group(function () {
         Route::get('/', [PromoController::class, 'index'])->name('index');
-        Route::get('/member', [PromoController::class, 'index'])->name('member.index');
+        
+        // Promo khusus member
+        Route::get('/member', [PromoController::class, 'memberPromo'])->name('member.index');
+        
         Route::post('/store', [PromoController::class, 'store'])->name('store');
-        Route::delete('/{id}', [PromoController::class, 'delete'])->name('delete');
+        
+        // Menggunakan route model binding
+        Route::delete('/{kode_promo}', [PromoController::class, 'delete'])->name('delete');
+        
         Route::get('/invoice', [PromoController::class, 'invoice'])->name('invoice');
     });
 

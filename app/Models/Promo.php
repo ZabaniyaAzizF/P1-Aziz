@@ -9,39 +9,45 @@ class Promo extends Model
 {
     use HasFactory;
 
-    protected $table = 'promo';
-    
     protected $primaryKey = 'kode_promo';
-    protected $keyType = 'string'; // Tipe data primary key adalah string
     public $incrementing = false;
+    protected $keyType = 'string';
+
     protected $fillable = [
         'kode_promo',
+        'nama',
         'type',
         'discount',
         'start_date',
         'end_date',
+        'ref_id',
     ];
 
-    public function Books() {
-        return $this->belongsToMany(Book::class, 'promo_books', 'kode_promo', 'kode_buku');
+    // Relasi ke kategori
+    public function kategori() {
+        return $this->belongsTo(Kategori::class, 'ref_id', 'kode_kategori');
     }
-    
-    public function Kategori() {
-        return $this->belongsToMany(Kategori::class, 'promo_kategori', 'kode_promo', 'kode_kategori');
-    }
-    
-    public function Publisher() {
-        return $this->belongsToMany(Publisher::class, 'promo_publisher', 'kode_promo', 'kode_publisher');
-    }
-    
-    public function Author() {
-        return $this->belongsToMany(Author::class, 'promo_author', 'kode_promo', 'kode_author');
-    }
-    
-    public function member()
-    {
-        return $this->belongsTo(User::class, 'user_id');
-    }
-    
 
+    // Relasi ke author
+    public function author() {
+        return $this->belongsTo(Author::class, 'ref_id', 'kode_author');
+    }
+
+    // Relasi ke publisher
+    public function publisher() {
+        return $this->belongsTo(Publisher::class, 'ref_id', 'kode_publisher');
+    }
+
+    // Relasi ke member
+    public function member() {
+        return $this->belongsTo(User::class, 'ref_id', 'id');
+    }
+
+    // Scope untuk promo aktif
+    public function scopeAktif($query)
+    {
+        $today = now()->toDateString();
+        return $query->where('start_date', '<=', $today)
+                     ->where('end_date', '>=', $today);
+    }
 }
