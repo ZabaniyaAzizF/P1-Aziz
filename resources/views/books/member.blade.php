@@ -56,9 +56,23 @@
         <div class="row">
             @forelse($books as $book)
             <div class="col-md-3 mb-4">
-                <div class="card h-100 shadow-sm">
-                    <img src="{{ asset('storage/uploads/books/photo/' . $book->photo) }}" class="card-img-top" alt="Foto Buku" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#bookModal{{ $book->kode_books }}">
-                </div>
+                <div class="card h-100 shadow-sm border-0 book-card" style="transition: all 0.3s ease;">
+                    <img 
+                        src="{{ asset('storage/uploads/books/photo/' . $book->photo) }}" 
+                        class="card-img-top rounded-top" 
+                        alt="Foto Buku" 
+                        style="cursor: pointer;" 
+                        data-bs-toggle="modal" 
+                        data-bs-target="#bookModal{{ $book->kode_books }}"
+                    >
+                    <div class="card-body text-center">
+                        <h6 class="card-title text-truncate mb-0" title="{{ $book->title }}">
+                            {{ $book->title }}
+                            <br>
+                            Rp{{ number_format($book->harga, 0, ',', '.') }}
+                        </h6>
+                    </div>
+                </div>                
             </div>
 
             <!-- Modal -->
@@ -79,7 +93,34 @@
                                     <li class="list-group-item"><strong>Penerbit:</strong> {{ $book->publisher->nama_publisher ?? '-' }}</li>
                                     <li class="list-group-item"><strong>Pengarang:</strong> {{ $book->author->nama_author ?? '-' }}</li>
                                     <li class="list-group-item"><strong>Harga:</strong> Rp{{ number_format($book->harga, 0, ',', '.') }}</li>
-                                    <li class="list-group-item"><strong>File Buku:</strong> <a href="{{ asset('storage/uploads/books/pdf/' . $book->file_book) }}" target="_blank">Lihat File</a></li>
+                                    @php
+                                    $sudahBayar = in_array($book->kode_books, $pembayaranUser ?? []);
+                                @endphp
+                                
+                                <li class="list-group-item">
+                                    <strong>File Buku:</strong>
+                                    @if(in_array($book->kode_books, $userPembayaran))
+                                        <a href="{{ asset('storage/uploads/books/pdf/' . $book->file_book) }}" target="_blank">Lihat File</a>
+                                    @elseif(auth()->user()->role === 'Member')
+                                        @if(auth()->user()->saldo >= $book->harga)
+                                            <form method="POST" action="{{ route('Peminjaman.store', $book->kode_books) }}">
+                                                @csrf
+                                                <input type="hidden" name="kode_books" value="{{ $book->kode_books }}">
+                                                <input type="hidden" name="user_id" value="{{ auth()->user()->id }}">
+                                                <label for="tanggal_pinjam">Tanggal Pinjam</label>
+                                                <input type="date" name="tanggal_pinjam" class="form-control mb-2" required>
+                                                <label for="tanggal_kembali">Tanggal Kembali</label>
+                                                <input type="date" name="tanggal_kembali" class="form-control mb-2" required>                                            
+                                                <button type="submit" class="btn btn-sm btn-success">Bayar Rp{{ number_format($book->harga, 0, ',', '.') }}</button>
+                                            </form>
+                                        @else
+                                            <span class="text-danger">Saldo tidak cukup</span>
+                                        @endif
+                                    @else
+                                        <span class="text-muted">Hanya untuk member</span>
+                                    @endif
+                                </li>
+                                
                                 </ul>
                             </div>
                         </div>
@@ -98,7 +139,17 @@
 
     </div>
 </main>
+<style>
+    .book-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 0.5rem 1rem rgba(255, 255, 255, 0.15);
+    }
 
+    .book-card img {
+        object-fit: cover;
+        height: 200px;
+    }
+</style>
 @include('layout.footer')
 
 <script>

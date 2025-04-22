@@ -24,33 +24,36 @@ class BooksController extends Controller
     {
         // Membuat query untuk Books dengan relasi kategori, author, dan publisher
         $query = Books::with(['kategori', 'author', 'publisher']);
-    
+        
         // Filter berdasarkan kategori
         if ($request->has('category') && $request->category != '') {
             $query->where('kode_kategori', $request->category);
         }
-    
+        
         // Filter berdasarkan pengarang
         if ($request->has('author') && $request->author != '') {
             $query->where('kode_author', $request->author);
         }
-    
+        
         // Filter berdasarkan penerbit
         if ($request->has('publisher') && $request->publisher != '') {
             $query->where('kode_publisher', $request->publisher);
         }
-    
+        
         // Mengambil data buku yang sudah difilter
         $books = $query->get();
-    
+        
         // Mengambil data kategori, author, dan publisher untuk dropdown filter
         $kategoriList = Kategori::all();
         $authorList = Author::all();
         $publisherList = Publisher::all();
-    
+        
+        // Menyaring buku yang sudah dibayar oleh user
+        $userPembayaran = auth()->user()->peminjaman()->where('status', 'lunas')->pluck('kode_books')->toArray();
+        
         // Menampilkan view dengan data buku dan daftar kategori, author, dan publisher
-        return view('books.member', compact('books', 'kategoriList', 'authorList', 'publisherList'));
-    }    
+        return view('books.member', compact('books', 'kategoriList', 'authorList', 'publisherList', 'userPembayaran'));
+    }     
 
     public function storeBooks(Request $request)
     {

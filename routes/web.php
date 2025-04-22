@@ -12,6 +12,7 @@ use App\Http\Controllers\PromoController;
 use App\Http\Controllers\PublisherController;
 use App\Http\Controllers\UsersController;
 use App\Http\Controllers\SettingsController;
+use App\Http\Controllers\PeminjamanController;
 
 /*
 |--------------------------------------------------------------------------
@@ -172,14 +173,14 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/invoice', [PromoController::class, 'invoice'])->name('invoice');
     });
 
-    //Route Peminjaman
-    Route::prefix('Peminjaman')->group(function () {
-        Route::get('/', [UsersController::class, 'indexPeminjaman'])->name('Peminjaman.index');
-        Route::get('/member', [UsersController::class, 'indexPeminjaman'])->name('Member.peminjaman.index');
-        Route::post('/store', [UsersController::class, 'storePeminjaman'])->name('Peminjaman.store');
-        Route::put('/{id}', [UsersController::class, 'storePeminjaman'])->name('Peminjaman.update');
-        Route::delete('/{id}', [UsersController::class, 'delete'])->name('Peminjaman.delete');
-        Route::get('/invoice', [UsersController::class, 'invoice'])->name('Peminjaman.invoice');
+
+    Route::prefix('Peminjaman')->name('Peminjaman.')->group(function () {
+        Route::get('/', [PeminjamanController::class, 'index'])->name('index');
+        Route::get('/member', [PeminjamanController::class, 'indexMember'])->name('member.index');
+        Route::post('/store/{kode_books}', [PeminjamanController::class, 'store'])->name('store');
+        Route::put('/{id}', [PeminjamanController::class, 'update'])->name('update');
+        Route::delete('/delete/{kode_books}', [PeminjamanController::class, 'destroy'])->name('delete');
+        Route::get('/invoice', [PeminjamanController::class, 'invoice'])->name('invoice');
     });
 
     //Route Pengembalian

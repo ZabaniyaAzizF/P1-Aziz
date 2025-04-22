@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('telepon', 13)->nullable();
             $table->text('alamat')->nullable();
             $table->enum('role', ['Admin', 'Supervisor', 'Petugas', 'Member'])->default('Member');
-            $table->decimal('saldo')->default(0);
+            $table->decimal('saldo',10, 2)->default(0);
             $table->rememberToken();
             $table->timestamps();
         });
@@ -33,4 +33,6 @@ return new class extends Migration
     {
         Schema::dropIfExists('users');
     }
+
+
 };

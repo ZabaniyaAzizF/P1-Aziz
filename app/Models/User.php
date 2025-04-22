@@ -45,6 +45,7 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'saldo' => 'float',
     ];
 
     // Relasi satu user memiliki banyak top up
@@ -52,4 +53,10 @@ class User extends Authenticatable
     {
         return $this->hasMany(Top_ups::class, 'user_id', 'id');
     }
+
+    public function peminjaman()
+    {
+        return $this->hasMany(Peminjaman::class, 'user_id', 'id');
+    }
+
 }

@@ -22,59 +22,6 @@
     </div>
     <!-- End Breadcrumb -->
 
-    <!-- Form Tambah/Edit -->
-    {{-- <div class="card mb-4">
-      <div class="card-header bg-success text-white">
-        <h5 class="mb-4">Add/Edit User</h5>
-      </div>
-      <div class="card-body">
-        <form id="usersForm" action="{{ route('users.store') }}" method="POST">
-          @csrf
-          <input type="hidden" id="id" name="id">
-          <div class="row g-3">
-            <div class="col-md-6">
-              <label for="name" class="form-label">Nama</label>
-              <input type="text" name="name" id="name" class="form-control" required>
-            </div>
-            <div class="col-md-6">
-              <label for="email" class="form-label">Email</label>
-              <input type="email" name="email" id="email" class="form-control" required>
-            </div>
-            <div class="col-md-6">
-              <label for="telepon" class="form-label">Telepon</label>
-              <input type="text" name="telepon" id="telepon" class="form-control">
-            </div>
-            <div class="col-md-6">
-              <label for="alamat" class="form-label">Alamat</label>
-              <input type="text" name="alamat" id="alamat" class="form-control">
-            </div>
-            <div class="col-md-6">
-              <label for="role" class="form-label">Role</label>
-              <select name="role" id="role" class="form-select" required>
-                @php
-                    $roles = ['Admin', 'Supervisor', 'Petugas', 'Member'];
-                @endphp
-                @foreach($roles as $role)
-                  <option value="{{ $role }}">{{ $role }}</option>
-                @endforeach
-              </select>
-            </div>
-            <div class="col-md-6">
-              <label for="password" class="form-label">Password</label>
-              <input type="password" name="password" id="password" class="form-control">
-              <small class="text-danger fw-semibold">Kosongkan jika tidak ingin mengubah password</small>
-            </div>      
-          </div>
-
-          <div class="mt-3 d-flex gap-2">
-            <button type="submit" class="btn btn-grd-primary px-4">Simpan</button>
-            <button type="button" id="cancelEdit" class="btn btn-danger px-4">Batal</button>
-          </div>          
-        </form>
-      </div>
-    </div> --}}
-    <!-- End Form -->
-
     <!-- Users Table -->
     <h6 class="mb-3 text-uppercase">Users Table</h6>
 

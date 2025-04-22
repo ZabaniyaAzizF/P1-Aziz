@@ -81,7 +81,7 @@
                     ['title' => 'Buku', 'icon' => 'book', 'route' => 'Member.books.index'],
                     ['title' => 'Promo ', 'icon' => 'local_offer', 'route' => 'Promo.member.index'],
                     ['title' => 'Top Up', 'icon' => 'local_offer', 'route' => 'Topup.member.index'],
-                    ['title' => 'Riwayat Peminjaman', 'icon' => 'shopping_cart_checkout', 'route' => 'Member.Peminjaman.index'],
+                    ['title' => 'Riwayat Peminjaman', 'icon' => 'shopping_cart_checkout', 'route' => 'Peminjaman.member.index'],
                     ['title' => 'Riwayat Pengembalian', 'icon' => 'assignment_return', 'route' => 'Member.Pengembalian.index'],
                   ]
                 ]

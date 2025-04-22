@@ -39,6 +39,11 @@ class Books extends Model
     public function publisher()
     {
         return $this->belongsTo(Publisher::class, 'kode_publisher', 'kode_publisher');
-    }    
+    }
+
+    public function peminjaman()
+    {
+        return $this->hasMany(Peminjaman::class, 'kode_books', 'kode_books');
+    }
     
 }

@@ -152,8 +152,8 @@ class PromoController extends Controller
     
         foreach ($books as $book) {
             if ($book->harga_asli !== null) {
-                $book->harga = $book->harga_asli;   // Kembalikan harga
-                $book->harga_asli = null;           // Kosongkan kembali
+                $book->harga = $book->harga_asli;
+                $book->harga_asli = null;
                 $book->save();
             }
         }
