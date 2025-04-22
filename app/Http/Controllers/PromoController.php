@@ -168,22 +168,12 @@ class PromoController extends Controller
      */
     public function invoice(Request $request)
     {
-        $promo = Promo::where('kode_promo', $request->kode_promo)
-            ->where('start_date', '<=', now())
-            ->where('end_date', '>=', now())
-            ->first();
-
-        if ($promo) {
-            return response()->json([
-                'success' => true,
-                'discount' => $promo->discount,
-                'message' => 'Promo tersedia dan valid.',
-            ]);
-        } else {
-            return response()->json([
-                'success' => false,
-                'message' => 'Promo tidak tersedia atau sudah tidak berlaku.',
-            ]);
-        }
+        $promos = Promo::with(['kategori', 'author', 'publisher', 'member'])->get();
+        $kategori = Kategori::all();
+        $authors = Author::all();
+        $publishers = Publisher::all();
+        $members = User::where('role', 'Member')->get();
+    
+        return view('promo.index', compact('promos', 'kategori', 'authors', 'publishers', 'members'));
     }
 }

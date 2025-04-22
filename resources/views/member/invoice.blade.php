@@ -9,7 +9,7 @@
     <div class="main-content">
       <!--breadcrumb-->
       <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
-        <div class="breadcrumb-title pe-3">Users</div>
+        <div class="breadcrumb-title pe-3">Member</div>
         <div class="ps-3">
           <nav aria-label="breadcrumb">
             <ol class="breadcrumb mb-0 p-0">
@@ -40,16 +40,20 @@
               <thead>
                 <tr>
                   <th>No</th>
-                  <th>Kode Kategori</th>
-                  <th>Nama Kategori</th>
+                  <th>Nama Member</th>
+                  <th>Email Member</th>
+                  <th>Telepon Member</th>
+                  <th>Alamat Member</th>
                 </tr>
               </thead>
               <tbody>
-                @foreach ($kategori as $item)
+                @foreach ($member as $item)
                 <tr>
-                  <td>{{$loop->iteration}}</td>
-                  <td>{{ $item->kode_kategori }}</td>
-                  <td>{{ $item->nama_kategori }}</td>
+                  <td>{{ $loop->iteration }}</td>
+                  <td>{{ $item->name }}</td>
+                  <td>{{ $item->email }}</td>
+                  <td>{{ $item->telepon }}</td>
+                  <td>{{ $item->alamat }}</td>
                 </tr>
                 @endforeach
               </tbody>

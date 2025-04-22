@@ -166,7 +166,7 @@
                 <td>Rp {{ number_format($book->harga, 0, ',', '.') }}</td>
                 <td>
                     <img src="{{ asset('storage/uploads/books/photo/' . $book->photo) }}" width="50" class="img-thumbnail" data-bs-toggle="modal" data-bs-target="#photoModal" data-bs-src="{{ asset('storage/uploads/books/photo/' . $book->photo) }}">
-                </td>                
+                </td>          
                 <td>
                     <button type="button" class="btn btn-warning btn-sm btn-edit" 
                     data-id="{{ $book->kode_books }}"

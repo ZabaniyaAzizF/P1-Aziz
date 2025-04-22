@@ -20,36 +20,79 @@
       </div>
     </div>
     <!-- End Breadcrumb -->
-    @if (auth()->user()->role == 'Admin' || auth()->user()->role == 'Petugas')
-    <div class="row">
-      <div class="col-12 col-lg-12">
-        <div class="card">
-          <div class="card-body p-4">
-            <h5 class="mb-4">Add/Edit member</h5>
+    <!-- Notifikasi -->
+    @if (session('success'))
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+    <strong>Berhasil!</strong> {{ session('success') }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    @endif
 
-            <form id="memberForm" action="{{ route('Member.store') }}" method="POST">
-              @csrf
-              <input type="hidden" id="member_id" name="member_id">
-              <div class="row mb-3">
-                <label for="nama_member" class="col-sm-3 col-form-label">Nama member</label>
-                <div class="col-sm-9">
-                  <input type="text" class="form-control" id="nama_member" name="nama_member" required>
-                </div>
-              </div>
-              <div class="row">
-                <label class="col-sm-3 col-form-label"></label>
-                <div class="col-sm-9">
-                  <div class="d-md-flex d-grid align-items-center gap-3">
-                    <button type="submit" class="btn btn-grd-primary px-4">Simpan</button>
-                  </div>
-                </div>
-              </div>
-            </form>
+    @if (session('error'))
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+    <strong>Gagal!</strong> {{ session('error') }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    @endif
+
+    @if ($errors->any())
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+    <strong>Oops!</strong> Ada kesalahan pada inputan kamu:
+    <ul class="mb-0 mt-1">
+        @foreach ($errors->all() as $error)
+        <li>{{ $error }}</li>
+        @endforeach
+    </ul>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    @endif
+
+
+    <!-- Form Tambah/Edit -->
+    <div class="card mb-4">
+      <div class="card-header bg-success text-white">
+        <h5 class="mb-4">Add/Edit User Member</h5>
+      </div>
+      <div class="card-body">
+        <form id="usersForm" action="{{ route('Member.store') }}" method="POST">
+          @csrf
+          <input type="hidden" id="id" name="id">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label for="name" class="form-label">Nama</label>
+              <input type="text" name="name" id="name" class="form-control" required>
+            </div>
+            <div class="col-md-6">
+              <label for="email" class="form-label">Email</label>
+              <input type="email" name="email" id="email" class="form-control" required>
+            </div>
+            <div class="col-md-6">
+              <label for="telepon" class="form-label">Telepon</label>
+              <input type="text" name="telepon" id="telepon" class="form-control">
+            </div>
+            <div class="col-md-6">
+              <label for="alamat" class="form-label">Alamat</label>
+              <input type="text" name="alamat" id="alamat" class="form-control">
+            </div>
+            <div class="col-md-6">
+                <label for="role" class="form-label">Role</label>
+                <input type="text" name="role" id="role" class="form-control" value="Member" required readonly>
+            </div>  
+            <div class="col-md-6">
+              <label for="password" class="form-label">Password</label>
+              <input type="password" name="password" id="password" class="form-control">
+              <small class="text-danger fw-semibold">Kosongkan jika tidak ingin mengubah password</small>
+            </div>      
           </div>
-        </div>
+
+          <div class="mt-3 d-flex gap-2">
+            <button type="submit" class="btn btn-grd-primary px-4">Simpan</button>
+            <button type="button" id="cancelEdit" class="btn btn-danger px-4">Batal</button>
+          </div>          
+        </form>
       </div>
     </div>
-  @endif
+    <!-- End Form -->
     <!-- member Table -->
     <div class="card">
       <div class="card-header bg-primary text-white">
@@ -62,17 +105,21 @@
             <thead class="table-dark">
               <tr>
                 <th>No</th>
-                <th>Kode member</th>
-                <th>Nama member</th>
+                <th>Nama Member</th>
+                <th>Email Member</th>
+                <th>Telepon Member</th>
+                <th>Alamat Member</th>
                 <th>Aksi</th>
               </tr>
             </thead>
             <tbody>
               @foreach ($member as $item)
               <tr>
-                <td>{{$loop->iteration}}</td>
-                <td>{{ $item->kode_member }}</td>
-                <td>{{ $item->nama_member }}</td>
+                <td>{{ $loop->iteration }}</td>
+                <td>{{ $item->name }}</td>
+                <td>{{ $item->email }}</td>
+                <td>{{ $item->telepon }}</td>
+                <td>{{ $item->alamat }}</td>
                 <td>
                 @if (auth()->user()->role == 'Supervisor' || auth()->user()->role == 'Admin')
                   <button class="btn btn-warning btn-sm editMember" data-id="{{ $item->id }}" data-kode="{{ $item->id }}" data-nama="{{ $item->nama_member }}"><i class="bx bx-edit-alt"></i> Edit</button>

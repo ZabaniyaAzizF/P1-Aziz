@@ -12,7 +12,7 @@ class MemberController extends Controller
      */
     public function index(Request $request)
     {
-        $member = User::all();
+        $member = User::where('role', 'member')->get();
         return view('member.index', compact('member'));
     }
 
@@ -21,35 +21,41 @@ class MemberController extends Controller
      */
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'nama_member' => 'required|string|max:255',
-        ]);
-
-        if ($request->member_id) {
-            // UPDATE member berdasarkan ID
-            $member = User::findOrFail($request->member_id);
-            $member->update([
-                'nama_member' => $validated['nama_member'],
-            ]);
-
-            return redirect()->route('member.index')->with('success', 'member berhasil diperbarui.');
+        $isUpdate = $request->id ? true : false;
+    
+        $rules = [
+            'name' => 'required|string|max:255',
+            'telepon' => 'nullable|string|max:13',
+            'alamat' => 'nullable|string|max:80',
+        ];
+    
+        if ($isUpdate) {
+            $rules['email'] = 'required|email|max:255|unique:users,email,' . $request->id;
+            $rules['password'] = 'nullable|string|min:8';
         } else {
-            // Gunakan autonumber untuk kode_member
-            $validated['kode_member'] = autonumber('member', 'kode_member', 3, 'KTG');
-
-            // INSERT member baru
-            User::create($validated);
-            return redirect()->route('member.index')->with('success', 'member berhasil ditambahkan.');
+            $rules['email'] = 'required|email|max:255|unique:users';
+            $rules['password'] = 'required|string|min:8';
         }
-    }
-
-    /**
-     * Get data for editing
-     */
-    public function edit($id)
-    {
-        $member = User::findOrFail($id);
-        return response()->json($member);
+    
+        $validated = $request->validate($rules);
+        $validated['role'] = 'Member';
+    
+        if ($isUpdate) {
+            $user = User::findOrFail($request->id);
+    
+            if ($request->filled('password')) {
+                $validated['password'] = bcrypt($request->password);
+            } else {
+                unset($validated['password']);
+            }
+    
+            $user->update($validated);
+            return redirect()->route('Member.index')->with('success', 'Member berhasil diperbarui!');
+        } else {
+            $validated['password'] = bcrypt($request->password);
+            User::create($validated);
+            return redirect()->route('Member.index')->with('success', 'Member berhasil ditambahkan!');
+        }
     }
 
     /**
@@ -59,12 +65,12 @@ class MemberController extends Controller
     {
         $member = User::findOrFail($id);
         $member->delete();
-        return redirect()->route('member.index')->with('success', 'member berhasil dihapus.');
+        return redirect()->route('Member.index')->with('success', 'member berhasil dihapus.');
     }
 
     public function invoice(Request $request)
     {
-        $member = User::all();
+        $member = User::where('role', 'member')->get();
         return view('member.invoice', compact('member'));
     }
 }

@@ -40,17 +40,32 @@
               <thead>
                 <tr>
                   <th>No</th>
-                  <th>Kode Kategori</th>
-                  <th>Nama Kategori</th>
+                  <th>Kode Promo</th>
+                  <th>Type</th>
+                  <th>Referensi</th>
+                  <th>Diskon</th>
+                  <th>Periode</th>
                 </tr>
               </thead>
               <tbody>
-                @foreach ($kategori as $item)
+                @foreach ($promos as $promo)
                 <tr>
-                  <td>{{$loop->iteration}}</td>
-                  <td>{{ $item->kode_kategori }}</td>
-                  <td>{{ $item->nama_kategori }}</td>
-                </tr>
+                  <td>{{ $loop->iteration }}</td>
+                  <td>{{ $promo->kode_promo }}</td>
+                  <td>{{ ucfirst($promo->type) }}</td>
+                  <td>
+                    @if ($promo->type == 'kategori')
+                      {{ $promo->kategori->nama_kategori }}
+                    @elseif ($promo->type == 'author')
+                      {{ $promo->author->nama_author }}
+                    @elseif ($promo->type == 'publisher')
+                      {{ $promo->publisher->nama_publisher }}
+                    @elseif ($promo->type == 'member')
+                      {{ $promo->member->name }}
+                    @endif
+                  </td>
+                  <td>{{ $promo->discount }}%</td>
+                  <td>{{ $promo->start_date }} - {{ $promo->end_date }}</td>
                 @endforeach
               </tbody>
             </table>

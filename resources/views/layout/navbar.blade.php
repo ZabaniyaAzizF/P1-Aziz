@@ -114,7 +114,7 @@
               <div class="text-center">
                 <i class="material-icons-outlined fs-2">person</i>
                 @auth
-                <h5 class="user-name mb-0 fw-bold">Hello, {{ Auth::user()->name }}</h5>
+                <h5 class="user-name mb- fw-bold">Hello, {{ Auth::user()->name }}</h5>
                 @php
                     $user = Auth::user();
                     $roleColors = [
@@ -125,6 +125,7 @@
                     ];
                     $roleColor = $roleColors[$user->role] ?? 'dark';
                 @endphp
+                <h6>Saldo Anda : Rp {{ number_format(Auth::user()->saldo, 0, ',', '.') }}</h6>
                 <span class="badge bg-{{ $roleColor }}">{{ ucfirst($user->role) }}</span>
             @else
                 <h5 class="user-name mb-0 fw-bold">Hello, Guest</h5>

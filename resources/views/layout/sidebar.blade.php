@@ -44,7 +44,6 @@
                     ['title' => 'Kategori', 'icon' => 'category', 'route' => 'Kategori.index'],
                     ['title' => 'Author', 'icon' => 'person', 'route' => 'Author.index'],
                     ['title' => 'Publisher', 'icon' => 'apartment', 'route' => 'Publisher.index'],
-                    ['title' => 'Member', 'icon' => 'groups', 'route' => 'Member.index'],
                     ['title' => 'Books', 'icon' => 'book', 'route' => 'Books.index'],
                     ['title' => 'Promo', 'icon' => 'local_offer', 'route' => 'Promo.index'],
                   ]
@@ -103,6 +102,7 @@
                     ['title' => 'Users Admin', 'icon' => 'security', 'route' => 'users.admin.index'],
                     ['title' => 'Users Supervisor', 'icon' => 'supervised_user_circle', 'route' => 'users.supervisor.index'],
                     ['title' => 'Users Petugas', 'icon' => 'badge', 'route' => 'users.petugas.index'],
+                    ['title' => 'Users Member', 'icon' => 'groups', 'route' => 'Member.index'],
                     ['title' => 'Settings', 'icon' => 'settings_applications', 'route' => 'Settings'],
                   ]
                 ]
