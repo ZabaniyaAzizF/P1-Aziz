@@ -174,6 +174,6 @@ class PromoController extends Controller
         $publishers = Publisher::all();
         $members = User::where('role', 'Member')->get();
     
-        return view('promo.index', compact('promos', 'kategori', 'authors', 'publishers', 'members'));
+        return view('promo.invoice', compact('promos', 'kategori', 'authors', 'publishers', 'members'));
     }
 }

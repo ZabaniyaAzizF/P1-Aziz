@@ -62,7 +62,7 @@
     <!-- Kategori Table -->
     <div class="card">
       <div class="card-header bg-primary text-white">
-        <h5 class="mb-0">Daftar Kategori</h5>
+        <h5 class="mb-3">Daftar Kategori</h5>
         <a href="{{ route('Kategori.invoice') }}" class="btn btn-warning"><i class="bx bx-user-plus"></i> Invoice </a>
       </div>
       <div class="card-body">

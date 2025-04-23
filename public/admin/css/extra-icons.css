@@ -17,7 +17,6 @@
 	line-height: inherit;
 	display: inline-block;
 	text-transform: none;
-	speak: none;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale
 }
@@ -6434,7 +6433,6 @@
 	display: inline-block;
 	font: normal normal normal 32px/1'LineIcons';
 	font-size: inherit;
-	speak: none;
 	text-transform: none;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale

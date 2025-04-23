@@ -40,17 +40,26 @@
               <thead>
                 <tr>
                   <th>No</th>
-                  <th>Kode Kategori</th>
-                  <th>Nama Kategori</th>
+                  <th>Kode Top Up</th>
+                  <th>Jumlah</th>
+                  <th>Metode</th>
+                  <th>Status</th>
+                  <th>Bukti Transfer</th>
                 </tr>
               </thead>
               <tbody>
-                @foreach ($kategori as $item)
+                @foreach ($topups as $index => $topup)
                 <tr>
-                  <td>{{$loop->iteration}}</td>
-                  <td>{{ $item->kode_kategori }}</td>
-                  <td>{{ $item->nama_kategori }}</td>
-                </tr>
+                  <td>{{ $index + 1 }}</td>
+                  <td>{{ $topup->kode_topups }}</td>
+                  <td>{{ number_format($topup->amount, 0, ',', '.') }}</td>
+                  <td>{{ ucfirst($topup->method) }}</td>
+                  <td>{{ ucfirst($topup->status) }}</td>
+                  <td>
+                    @if ($topup->bukti_transfer)
+                      <img src="{{ asset('storage/' . $topup->bukti_transfer) }}" width="50">
+                    @endif
+                  </td>
                 @endforeach
               </tbody>
             </table>

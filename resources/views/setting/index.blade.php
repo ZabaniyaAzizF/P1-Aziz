@@ -61,6 +61,18 @@
                                         </div>
                                     </div>
                                     <div class="row mb-3">
+                                        <label for="rekening" class="col-sm-3 col-form-label">No Rekening</label>
+                                        <div class="col-sm-9">
+                                            <input type="text" class="form-control" id="rekening" name="rekening" value="{{ $setting->rekening }}">
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <label for="denda" class="col-sm-3 col-form-label">Denda Keterlambatan</label>
+                                        <div class="col-sm-9">
+                                            <input type="text" class="form-control" id="denda" name="denda" value="{{ number_format($setting->denda, 0, ',', '.') }}">
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
                                         <label for="alamat" class="col-sm-3 col-form-label">Address</label>
                                         <div class="col-sm-9">
                                             <textarea class="form-control" id="alamat" name="alamat" rows="3">{{ $setting->alamat }}</textarea>

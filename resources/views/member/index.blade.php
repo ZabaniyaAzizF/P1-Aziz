@@ -96,7 +96,7 @@
     <!-- member Table -->
     <div class="card">
       <div class="card-header bg-primary text-white">
-        <h5 class="mb-0">Daftar member</h5>
+        <h5 class="mb-3">Daftar member</h5>
         <a href="{{ route('Member.invoice') }}" class="btn btn-warning"><i class="bx bx-user-plus"></i> Invoice </a>
       </div>
       <div class="card-body">
@@ -122,7 +122,17 @@
                 <td>{{ $item->alamat }}</td>
                 <td>
                 @if (auth()->user()->role == 'Supervisor' || auth()->user()->role == 'Admin')
-                  <button class="btn btn-warning btn-sm editMember" data-id="{{ $item->id }}" data-kode="{{ $item->id }}" data-nama="{{ $item->nama_member }}"><i class="bx bx-edit-alt"></i> Edit</button>
+                <button 
+                class="btn btn-warning btn-sm editUsers"
+                data-id="{{ $item->id }}"
+                data-name="{{ $item->name }}"
+                data-email="{{ $item->email }}"
+                data-telepon="{{ $item->telepon }}"
+                data-alamat="{{ $item->alamat }}"
+                data-role="{{ $item->role }}"
+              >
+                <i class="bx bx-edit-alt"></i> Edit
+              </button>  
                 @endif
                 @if (auth()->user()->role == 'Admin')
                   <form action="{{ route('Member.delete', $item->id) }}" method="POST" style="display:inline;">
@@ -149,13 +159,21 @@
 @include('layout.footer')
 
 <script>
-  document.querySelectorAll('.editMember').forEach(button => {
+  document.querySelectorAll('.editUsers').forEach(button => {
     button.addEventListener('click', function() {
-        document.getElementById('member_id').value = this.dataset.kode;
-        document.getElementById('kode_member').value = this.dataset.kode; // Tidak diubah
-        document.getElementById('nama_member').value = this.dataset.nama;
+      document.getElementById('id').value = this.dataset.id;
+      document.getElementById('name').value = this.dataset.name;
+      document.getElementById('email').value = this.dataset.email;
+      document.getElementById('telepon').value = this.dataset.telepon;
+      document.getElementById('alamat').value = this.dataset.alamat;
+      document.getElementById('role').value = this.dataset.role;
+      document.getElementById('password').value = '';
     });
-});
-</script>
-
+  });
+  
+  document.getElementById('cancelEdit').addEventListener('click', function() {
+    document.getElementById('usersForm').reset();
+    document.getElementById('id').value = '';
+  });
+  </script>  
 @endsection

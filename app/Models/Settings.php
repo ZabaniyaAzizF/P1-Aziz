@@ -17,6 +17,8 @@ class Settings extends Model
         'nama',
         'email',
         'telepon',
-        'alamat'
+        'rekening',
+        'denda',
+        'alamat',
     ];
 }

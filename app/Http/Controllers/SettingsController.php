@@ -18,10 +18,12 @@ class SettingsController extends Controller
     public function update(Request $request, string $id)
     {
         $request->validate([
-            'path_logo' => 'nullable|file|image|max:2048', // Validasi untuk gambar
+            'path_logo' => 'nullable|file|image|max:2048',
             'nama' => 'required|max:100',
             'email' => 'required|email|max:50',
             'telepon' => 'required|max:20',
+            'rekening' => 'required|max:20',
+            'denda' => 'required|',
             'alamat' => 'required',
         ]);
 
@@ -44,6 +46,8 @@ class SettingsController extends Controller
             $setting->email = $request->input('email');
             $setting->telepon = $request->input('telepon');
             $setting->alamat = $request->input('alamat');
+            $setting->rekening = $request->input('rekening');
+            $setting->denda = $request->input('denda');
             $setting->save();
 
             return redirect()->route('Settings')->with('success', 'Settings updated successfully.');

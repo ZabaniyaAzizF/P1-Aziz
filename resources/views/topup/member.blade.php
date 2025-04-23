@@ -80,11 +80,10 @@
     <div class="card">
       <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
         <h5 class="mb-0">Daftar Top Up</h5>
-        <a href="{{ route('Topup.invoice') }}" class="btn btn-warning"><i class="bx bx-printer"></i> Invoice </a>
       </div>
       <div class="card-body p-4">
         <div class="table-responsive">
-          <table class="table table-bordered">
+          <table  id="example2" class="table table-striped table-hover table-bordered">
             <thead>
               <tr>
                 <th>No</th>
@@ -107,7 +106,7 @@
                   @if ($topup->bukti_transfer)
                     <img src="{{ asset('storage/' . $topup->bukti_transfer) }}" width="50">
                   @endif
-                </td>                
+                </td>           
               </tr>
               @endforeach
             </tbody>

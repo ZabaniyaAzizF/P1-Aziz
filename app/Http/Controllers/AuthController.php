@@ -2,31 +2,31 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
-use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use App\Models\User;
+use App\Models\Books;
+use App\Models\Kategori;
+use App\Models\Promo;
+use App\Models\Peminjaman;
+use App\Models\Top_ups;
 
 class AuthController extends Controller
 {
     public function index()
     {
-        // Jika pengguna sudah login, arahkan ke dashboard
-        if (Auth::check()) {
-            return redirect()->route('Dashboard');
+        if (auth()->check()) {
+            return view('dashboard');
         }
-    
-        // Mengatur header cache
-        return response()
-            ->view('auth.login')
-            ->header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')
-            ->header('Pragma', 'no-cache')
-            ->header('Expires', '0');
-    }    
+
+        // Jika belum login, tampilkan form login
+        return view('auth.login');
+    }
 
     public function login_proses(Request $request)
     {
+        // Validasi input
         $request->validate([
             'email'    => 'required|email',
             'password' => 'required'
@@ -41,18 +41,17 @@ class AuthController extends Controller
             'password' => $request->password
         ];
 
-        // Menambahkan parameter 'remember' jika checkbox diaktifkan
         $remember = $request->has('remember');
 
         if (Auth::attempt($data, $remember)) {
-            return redirect()->route('Dashboard'); // Pastikan rute ini sesuai
+            return redirect()->route('Dashboard');
         } else {
             return redirect()->route('login')->with('failed', 'Email atau Password Anda Salah');
         }
     }
 
-    public function register() {
-
+    public function register()
+    {
         return view('auth.register');
     }
 
@@ -60,43 +59,69 @@ class AuthController extends Controller
     {
         // Validasi input
         $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email',
+            'name'     => 'required|string|max:255',
+            'email'    => 'required|email|unique:users,email',
             'password' => 'required|min:6|confirmed',
-            'telepon' => 'required|min:12'
+            'telepon'  => 'required|min:12'
         ], [
-            'name.required' => 'Nama wajib diisi',
-            'email.required' => 'Email wajib diisi',
-            'email.email' => 'Format email tidak valid',
-            'email.unique' => 'Email sudah digunakan',
-            'telepon.required' => 'Telepon wajib diisi',
-            'password.min' => 'Telepon minimal 12 karakter',
-            'password.required' => 'Password wajib diisi',
-            'password.min' => 'Password minimal 6 karakter',
-            'password.confirmed' => 'Konfirmasi password tidak cocok',
+            'name.required'         => 'Nama wajib diisi',
+            'email.required'        => 'Email wajib diisi',
+            'email.email'           => 'Format email tidak valid',
+            'email.unique'          => 'Email sudah digunakan',
+            'telepon.required'      => 'Telepon wajib diisi',
+            'password.required'     => 'Password wajib diisi',
+            'password.min'          => 'Password minimal 6 karakter',
+            'password.confirmed'    => 'Konfirmasi password tidak cocok',
         ]);
-    
-        // Menyimpan data user baru
+
+        // Simpan user baru
         $user = new User();
-        $user->name = $request->name;
-        $user->email = $request->email;
-        $user->telepon = $request->telepon;
+        $user->name     = $request->name;
+        $user->email    = $request->email;
+        $user->telepon  = $request->telepon;
         $user->password = Hash::make($request->password);
-        
-        // Atur rolenya sebagai 'Member'
-        $user->role = 'Member';
-        
+        $user->role     = 'Member'; // default role
+
         $user->save();
-    
-        // Setelah register, langsung login user (opsional)
+
         Auth::login($user);
-    
+
         return redirect()->route('Dashboard')->with('success', 'Akun berhasil dibuat dan login!');
-    }    
+    }
 
     public function logout()
     {
         Auth::logout();
         return redirect()->route('login');
+    }
+
+    public function getData()
+    {
+        if (auth()->check()) {
+            $role = auth()->user()->role;
+
+            if (in_array($role, ['Admin', 'Supervisor', 'Petugas'])) {
+                return response()->json([
+                    'totalUsers'    => User::count(),
+                    'totalBuku'     => Books::count(),
+                    'totalKategori' => Kategori::count(),
+                    'totalPromo'    => Promo::count(),
+                ]);
+            }
+
+            if ($role === 'Member') {
+                $userId = auth()->id();
+                return response()->json([
+                    'totalPeminjaman' => Peminjaman::where('user_id', $userId)->count(),
+                    'totalSaldo'      => auth()->user()->saldo,
+                    'totalTopUp'      => Top_ups::where('user_id', $userId)->count(),
+                    'totalPromo'      => Promo::count(),
+                ]);
+            }
+
+            return response()->json(['message' => 'Akses ditolak'], 403);
+        }
+
+        return response()->json(['message' => 'Belum login'], 401);
     }
 }

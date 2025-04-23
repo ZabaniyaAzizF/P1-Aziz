@@ -9,7 +9,7 @@
     <div class="main-content">
       <!--breadcrumb-->
       <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
-        <div class="breadcrumb-title pe-3">Books</div>
+        <div class="breadcrumb-title pe-3">Users</div>
         <div class="ps-3">
           <nav aria-label="breadcrumb">
             <ol class="breadcrumb mb-0 p-0">
@@ -39,28 +39,30 @@
             <table class="table table-striped table-bordered table-hover">
               <thead>
                 <tr>
-                  <th>No</th>
-                  <th>Title</th>
-                  <th>Kategori</th>
-                  <th>Author</th>
-                  <th>Publisher</th>
-                  <th>Harga</th>
-                  <td>Photo</td>
-              </tr>
-              </thead>
-              <tbody>
-              @foreach ($books as $book)
-              <tr>
-                  <td>{{ $loop->iteration }}</td>
-                  <td>{{ $book->title }}</td>
-                  <td>{{ $book->kategori->nama_kategori }}</td>
-                  <td>{{ $book->author->nama_author }}</td>
-                  <td>{{ $book->publisher->nama_publisher }}</td>
-                  <td>Rp {{ number_format($book->harga, 0, ',', '.') }}</td>
-                  <td>
-                      <img src="{{ asset('storage/uploads/books/photo/' . $book->photo) }}" width="50" class="img-thumbnail" data-bs-toggle="modal" data-bs-target="#photoModal" data-bs-src="{{ asset('storage/uploads/books/photo/' . $book->photo) }}">
-                  </td>    
-                </tr>
+                    <th>No</th>
+                    <th>Nama Buku</th>
+                    <th>Nama Member</th>
+                    <th>Tanggal Pinjam</th>
+                    <th>Tanggal Kembali</th>
+                    <th>Status Pembayaran</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @foreach ($peminjamans as $peminjam)
+                  <tr>
+                    <td>{{ $loop->iteration }}</td>
+                    <td>{{ $peminjam->buku ? $peminjam->buku->title : 'N/A' }}</td>
+                    <td>{{ $peminjam->user ? $peminjam->user->name : 'N/A' }}</td>
+                    <td>{{ \Carbon\Carbon::parse($peminjam->tanggal_pinjam)->format('d M Y') }}</td>
+                    <td>{{ \Carbon\Carbon::parse($peminjam->tanggal_kembali)->format('d M Y') }}</td>
+                    <td>
+                        @if($peminjam->status === 'lunas')
+                          <span class="badge bg-success">Lunas</span>
+                        @else
+                          <span class="badge bg-danger">Belum Lunas</span>
+                        @endif
+                      </td>                  
+                  </tr>
                 @endforeach
               </tbody>
             </table>

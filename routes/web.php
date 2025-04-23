@@ -24,26 +24,15 @@ use App\Http\Controllers\PeminjamanController;
 | will be assigned to the "web" middleware group. Make something great!
 |
 */
-
-// Route::get('/', function () {
-//     return redirect()->route('guest.dashboard');
-// });
-
-Route::get('/', function () {
-    return redirect()->route('login');
-});
+// Rute login hanya untuk pengguna yang belum login
+Route::get('/', [AuthController::class, 'index'])
+    ->name('login')
+    ->middleware(['guest', 'prevent-back-to-login']);
+Route::post('/login-proses', [AuthController::class, 'login_proses'])->name('login-proses');
 
 Route::get('/dashboard', [GuestController::class, 'index'])->name('guest.dashboard');
 
 Route::get('/Books', [GuestController::class, 'indexBooks'])->name('guest.books');
-
-
-
-// Rute login hanya untuk pengguna yang belum login
-Route::get('/login', [AuthController::class, 'index'])
-    ->name('login')
-    ->middleware(['guest', 'prevent-back-to-login']);
-Route::post('/login-proses', [AuthController::class, 'login_proses'])->name('login-proses');
 
 // Rute Register
 Route::get('/register', [AuthController::class, 'register'])->name('register.index');
@@ -57,6 +46,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/Dashboard', function () {
         return view('dashboard.index');
     })->name('Dashboard');
+    Route::get('/dashboard/data', [AuthController::class, 'getData'])->name('dashboard.data');
 
     //Route Users
     Route::get('/users', [UsersController::class, 'index'])->name('users.index');
@@ -155,7 +145,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/member', [TopupController::class, 'indexMember'])->name('member.index');
         Route::post('/proses', [TopupController::class, 'store'])->name('store');
         Route::put('/{kode_topups}/status', [TopupController::class, 'updateStatus'])->name('updateStatus'); // Perbaikan di sini
-        Route::post('/invoice', [TopupController::class, 'invoiceTopup'])->name('invoice');
+        Route::get('/invoice', [TopupController::class, 'invoiceTopup'])->name('invoice');
     });
 
     // Route Promo

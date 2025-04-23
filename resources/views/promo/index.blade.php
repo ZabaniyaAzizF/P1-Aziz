@@ -87,11 +87,14 @@
     <!-- Tabel Promo -->
     <div class="card mt-4">
       <div class="card-header bg-primary text-white">
-        <h5 class="mb-0">Daftar Promo</h5>
+        <h5 class="mb-3">Daftar Promo</h5>
+        @if (auth()->user()->role == 'Admin' || auth()->user()->role == 'Petugas')
+          <a href="{{ route('Promo.invoice') }}" class="btn btn-warning"><i class="bx bx-bookmark-plus"></i> Invoice </a>
+        @endif
       </div>
       <div class="card-body">
         <div class="table-responsive">
-          <table class="table table-striped table-bordered">
+          <table  id="example2" class="table table-striped table-hover table-bordered">
             <thead class="table-dark">
               <tr>
                 <th>No</th>
@@ -100,7 +103,9 @@
                 <th>Referensi</th>
                 <th>Diskon</th>
                 <th>Periode</th>
-                <th>Aksi</th>
+                @if (auth()->user()->role == 'Admin' || auth()->user()->role == 'Petugas')
+                <th>Aksi</th>              
+                @endif
               </tr>
             </thead>
             <tbody>
@@ -122,6 +127,7 @@
                 </td>
                 <td>{{ $promo->discount }}%</td>
                 <td>{{ $promo->start_date }} - {{ $promo->end_date }}</td>
+                @if (auth()->user()->role == 'Admin' || auth()->user()->role == 'Petugas')
                 <td>
                   <!-- Edit & Delete -->
                   <form action="{{ route('Promo.delete', $promo->kode_promo) }}" method="POST" onsubmit="return confirm('Yakin hapus promo ini?')" style="display:inline;">
@@ -129,6 +135,7 @@
                     <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
                   </form>
                 </td>
+                @endif
               </tr>
               @endforeach
             </tbody>

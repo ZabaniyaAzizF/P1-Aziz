@@ -17,6 +17,8 @@ return new class extends Migration
             $table->string('nama', 100);
             $table->string('email', 50);
             $table->string('telepon', 20);
+            $table->string('rekening', 20);
+            $table->decimal('denda',10, 2);
             $table->text('alamat');
             $table->timestamps();
         });

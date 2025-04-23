@@ -10,8 +10,8 @@ class TopupController extends Controller
 {
     public function index()
     {
-        $topups = Top_ups::with('user')->get(); // Mengambil semua data top up
-        $kodetopup = autonumber('top_ups', 'kode_topups', 3, 'TUP'); // Generate kode top-up baru
+        $topups = Top_ups::with('user')->get();
+        $kodetopup = autonumber('top_ups', 'kode_topups', 3, 'TUP');
         return view('topup.index', compact('topups', 'kodetopup'));
     }
 
@@ -19,7 +19,7 @@ class TopupController extends Controller
     {
         $userId = auth()->id(); // ambil ID user yang login
         $topups = Top_ups::where('user_id', $userId)->get();
-        $kodetopup = autonumber('top_ups', 'kode_topups', 3, 'TUP'); // Generate kode top-up baru
+        $kodetopup = autonumber('top_ups', 'kode_topups', 3, 'TUP');
     
         return view('topup.member', compact('topups', 'kodetopup'));
     }
@@ -83,8 +83,10 @@ class TopupController extends Controller
     }
 
     // Fungsi untuk invoice
-    public function generateInvoice()
+    public function invoiceTopup()
     {
-        // Implementasi logika invoice (misalnya menggunakan PDF atau template HTML)
+        $topups = Top_ups::with('user')->get();
+
+        return view('topup.invoice', compact('topups'));
     }
 }
