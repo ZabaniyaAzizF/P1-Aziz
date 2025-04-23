@@ -41,7 +41,7 @@
                 <th>Tanggal Pinjam</th>
                 <th>Tanggal Kembali</th>
                 <th>Status Pembayaran</th>
-                <th>Actions</th>
+                {{-- <th>Actions</th> --}}
               </tr>
             </thead>
             <tbody>
@@ -59,7 +59,7 @@
                       <span class="badge bg-danger">Belum Lunas</span>
                     @endif
                   </td>                  
-                <td>
+                {{-- <td>
                   <button 
                     class="btn btn-warning btn-sm editPeminjaman"
                     data-id="{{ $peminjam->id }}"
@@ -71,14 +71,7 @@
                   >
                     <i class="bx bx-edit-alt"></i> Edit
                   </button>                
-                  <form action="{{ route('Peminjaman.delete', $peminjam->kode_peminjaman) }}" method="POST" style="display:inline;">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this borrowing record?')">
-                      <i class="bx bx-trash"></i> Delete
-                    </button>
-                  </form>
-                </td>
+                </td> --}}
               </tr>
               @endforeach
             </tbody>

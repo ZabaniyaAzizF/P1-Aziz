@@ -18,7 +18,7 @@ class PeminjamanController extends Controller
     {
         $peminjamans = Peminjaman::with(['user', 'buku'])->get();
     
-        return view('peminjaman.index', compact('peminjamans'));
+        return view('peminjaman.admin', compact('peminjamans'));
     }    
 
     public function indexMember()
