@@ -37,6 +37,8 @@
                 <th>Metode</th>
                 <th>Status</th>
                 <th>Bukti Transfer</th>
+                <td>Di Buat</td>
+                <td>Di Update</td>
                 <th>Aksi</th>
               </tr>
             </thead>
@@ -53,6 +55,8 @@
                     <img src="{{ asset('storage/' . $topup->bukti_transfer) }}" width="50">
                   @endif
                 </td>
+                <td>{{ $topup->created_at }}</td>
+                <td>{{ $topup->updated_at }}</td> 
                 <td>
                     <form action="{{ route('Topup.updateStatus', $topup->kode_topups) }}" method="POST" class="d-inline">
                       @csrf

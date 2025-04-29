@@ -44,6 +44,8 @@
                   <th>Email Member</th>
                   <th>Telepon Member</th>
                   <th>Alamat Member</th>
+                  <td>Di Buat</td>
+                  <td>Di Update</td>
                 </tr>
               </thead>
               <tbody>
@@ -54,6 +56,8 @@
                   <td>{{ $item->email }}</td>
                   <td>{{ $item->telepon }}</td>
                   <td>{{ $item->alamat }}</td>
+                  <td>{{ $item->created_at }}</td>
+                  <td>{{ $item->updated_at }}</td> 
                 </tr>
                 @endforeach
               </tbody>

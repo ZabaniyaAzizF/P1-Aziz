@@ -45,6 +45,8 @@
                   <th>Referensi</th>
                   <th>Diskon</th>
                   <th>Periode</th>
+                  <td>Di Buat</td>
+                  <td>Di Update</td>
                 </tr>
               </thead>
               <tbody>
@@ -66,6 +68,8 @@
                   </td>
                   <td>{{ $promo->discount }}%</td>
                   <td>{{ $promo->start_date }} - {{ $promo->end_date }}</td>
+                  <td>{{ $promo->created_at }}</td>
+                  <td>{{ $promo->updated_at }}</td> 
                 @endforeach
               </tbody>
             </table>

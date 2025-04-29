@@ -5,21 +5,20 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Peminjaman extends Model
+class Pembelian extends Model
 {
     use HasFactory;
 
-    protected $table = 'peminjaman';
-    protected $primaryKey = 'kode_peminjaman';
+    protected $table = 'pembelian';
+    protected $primaryKey = 'kode_pembelian';
     public $incrementing = false;
     protected $keyType = 'string';
 
     protected $fillable = [
-        'kode_peminjaman',
+        'kode_pembelian',
         'user_id',
-        'kode_books_fisik',
-        'tanggal_pinjam',
-        'tanggal_kembali',
+        'kode_books_digital',
+        'tanggal_beli',
         'status',
     ];
 
@@ -30,8 +29,8 @@ class Peminjaman extends Model
     }
 
     // Relasi ke Book
-    public function buku_fisik()
+    public function buku_digital()
     {
-        return $this->belongsTo(Books_fisik::class, 'kode_books_fisik', 'kode_books_fisik');
+        return $this->belongsTo(Books_digital::class, 'kode_books_digital', 'kode_books_digital');
     }
 }

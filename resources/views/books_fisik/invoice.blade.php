@@ -46,20 +46,24 @@
                   <th>Publisher</th>
                   <th>Harga</th>
                   <td>Photo</td>
+                  <td>Di Buat</td>
+                  <td>Di Update</td>
               </tr>
               </thead>
               <tbody>
               @foreach ($books as $book)
               <tr>
-                  <td>{{ $loop->iteration }}</td>
-                  <td>{{ $book->title }}</td>
-                  <td>{{ $book->kategori->nama_kategori }}</td>
-                  <td>{{ $book->author->nama_author }}</td>
-                  <td>{{ $book->publisher->nama_publisher }}</td>
-                  <td>Rp {{ number_format($book->harga, 0, ',', '.') }}</td>
-                  <td>
-                      <img src="{{ asset('storage/uploads/books/photo/' . $book->photo) }}" width="50" class="img-thumbnail" data-bs-toggle="modal" data-bs-target="#photoModal" data-bs-src="{{ asset('storage/uploads/books/photo/' . $book->photo) }}">
-                  </td>    
+                <td>{{ $loop->iteration }}</td>
+                <td>{{ $book->title }}</td>
+                <td>{{ $book->kategori->nama_kategori }}</td>
+                <td>{{ $book->author->nama_author }}</td>
+                <td>{{ $book->publisher->nama_publisher }}</td>
+                <td>Rp {{ number_format($book->harga, 0, ',', '.') }}</td>
+                <td>
+                    <img src="{{ asset('storage/uploads/books/photo/' . $book->photo) }}" width="50" class="img-thumbnail" data-bs-toggle="modal" data-bs-target="#photoModal" data-bs-src="{{ asset('storage/uploads/books/photo/' . $book->photo) }}">
+                </td>
+                <td>{{ $book->created_at }}</td>
+                <td>{{ $book->updated_at }}</td>  
                 </tr>
                 @endforeach
               </tbody>

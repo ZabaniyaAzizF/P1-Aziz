@@ -41,6 +41,8 @@
                 <th>Telepon</th>
                 <th>Alamat</th>
                 <th>Role</th>
+                <td>Di Buat</td>
+                <td>Di Update</td>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -52,7 +54,6 @@
                 <td>{{ $user->email }}</td>
                 <td>{{ $user->telepon }}</td>
                 <td>{{ $user->alamat }}</td>
-                <td>
                   @php
                       $roleColors = [
                           'admin' => 'primary',
@@ -65,6 +66,8 @@
                     {{ ucfirst($user->role) }}
                   </span>
                 </td>
+                <td>{{ $user->created_at }}</td>
+                <td>{{ $user->updated_at }}</td> 
                 <td>
                   <button 
                   class="btn btn-warning btn-sm editUsers"

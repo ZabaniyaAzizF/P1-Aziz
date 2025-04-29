@@ -42,6 +42,8 @@
                   <th>No</th>
                   <th>Kode publisher</th>
                   <th>Nama publisher</th>
+                  <td>{{ $user->created_at }}</td>
+                  <td>{{ $user->updated_at }}</td> 
                 </tr>
               </thead>
               <tbody>

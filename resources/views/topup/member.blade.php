@@ -92,6 +92,8 @@
                 <th>Metode</th>
                 <th>Status</th>
                 <th>Bukti Transfer</th>
+                <td>Di Buat</td>
+                <td>Di Update</td>
               </tr>
             </thead>
             <tbody>
@@ -106,7 +108,9 @@
                   @if ($topup->bukti_transfer)
                     <img src="{{ asset('storage/' . $topup->bukti_transfer) }}" width="50">
                   @endif
-                </td>           
+                </td>
+                <td>{{ $topup->created_at }}</td>
+                <td>{{ $topup->updated_at }}</td>   
               </tr>
               @endforeach
             </tbody>

@@ -44,8 +44,10 @@
                     ['title' => 'Kategori', 'icon' => 'category', 'route' => 'Kategori.index'],
                     ['title' => 'Author', 'icon' => 'person', 'route' => 'Author.index'],
                     ['title' => 'Publisher', 'icon' => 'apartment', 'route' => 'Publisher.index'],
-                    ['title' => 'Books', 'icon' => 'book', 'route' => 'Books.index'],
+                    ['title' => 'Buku Fisik', 'icon' => 'book', 'route' => 'Books_fisik.index'],
+                    ['title' => 'Buku Digital', 'icon' => 'book', 'route' => 'Books_digital.index'],
                     ['title' => 'Promo', 'icon' => 'local_offer', 'route' => 'Promo.index'],
+                    ['title' => 'Backup', 'icon' => 'local_offer', 'route' => 'Database.index'],
                   ]
                 ]
               ]
@@ -62,8 +64,9 @@
                   'icon' => 'point_of_sale',
                   'children' => [
                     ['title' => 'Top Up', 'icon' => 'local_offer', 'route' => 'Topup.index'],
-                    ['title' => 'Peminjaman', 'icon' => 'shopping_cart_checkout', 'route' => 'Peminjaman.index'],
-                    ['title' => 'Pengembalian', 'icon' => 'assignment_return', 'route' => 'Pengembalian.index'],
+                    // ['title' => 'Peminjaman', 'icon' => 'shopping_cart_checkout', 'route' => 'Peminjaman.index'],
+                    // ['title' => 'Pengembalian', 'icon' => 'assignment_return', 'route' => 'Peminjaman.index'],
+                    // ['title' => 'Pembelian', 'icon' => 'shopping_cart_checkout', 'route' => 'Pembelian.index'],
                   ]
                 ]
               ]
@@ -78,8 +81,7 @@
                   'title' => 'Transaksi',
                   'icon' => 'point_of_sale',
                   'children' => [
-                    ['title' => 'Buku', 'icon' => 'book', 'route' => 'Member.books.index'],
-                    ['title' => 'Promo ', 'icon' => 'local_offer', 'route' => 'Promo.member.index'],
+                    ['title' => 'Buku', 'icon' => 'book', 'route' => 'Books_fisik.member.index'],
                     ['title' => 'Top Up', 'icon' => 'local_offer', 'route' => 'Topup.member.index'],
                     ['title' => 'Riwayat Peminjaman', 'icon' => 'shopping_cart_checkout', 'route' => 'Peminjaman.member.index'],
                     ['title' => 'Riwayat Pengembalian', 'icon' => 'assignment_return', 'route' => 'Member.Pengembalian.index'],

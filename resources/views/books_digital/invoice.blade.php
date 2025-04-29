@@ -9,7 +9,7 @@
     <div class="main-content">
       <!--breadcrumb-->
       <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
-        <div class="breadcrumb-title pe-3">Users</div>
+        <div class="breadcrumb-title pe-3">Books</div>
         <div class="ps-3">
           <nav aria-label="breadcrumb">
             <ol class="breadcrumb mb-0 p-0">
@@ -40,20 +40,30 @@
               <thead>
                 <tr>
                   <th>No</th>
-                  <th>Kode Kategori</th>
-                  <th>Nama Kategori</th>
+                  <th>Title</th>
+                  <th>Kategori</th>
+                  <th>Author</th>
+                  <th>Publisher</th>
+                  <th>Harga</th>
+                  <td>Photo</td>
                   <td>Di Buat</td>
                   <td>Di Update</td>
-                </tr>
+              </tr>
               </thead>
               <tbody>
-                @foreach ($kategori as $item)
-                <tr>
-                  <td>{{$loop->iteration}}</td>
-                  <td>{{ $item->kode_kategori }}</td>
-                  <td>{{ $item->nama_kategori }}</td>
-                  <td>{{ $item->created_at }}</td>
-                  <td>{{ $item->updated_at }}</td> 
+              @foreach ($books as $book)
+              <tr>
+                <td>{{ $loop->iteration }}</td>
+                <td>{{ $book->title }}</td>
+                <td>{{ $book->kategori->nama_kategori }}</td>
+                <td>{{ $book->author->nama_author }}</td>
+                <td>{{ $book->publisher->nama_publisher }}</td>
+                <td>Rp {{ number_format($book->harga, 0, ',', '.') }}</td>
+                <td>
+                    <img src="{{ asset('storage/uploads/books/photo/' . $book->photo) }}" width="50" class="img-thumbnail" data-bs-toggle="modal" data-bs-target="#photoModal" data-bs-src="{{ asset('storage/uploads/books/photo/' . $book->photo) }}">
+                </td>
+                <td>{{ $book->created_at }}</td>
+                <td>{{ $book->updated_at }}</td> 
                 </tr>
                 @endforeach
               </tbody>

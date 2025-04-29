@@ -63,7 +63,7 @@
     <div class="card">
       <div class="card-header bg-primary text-white">
         <h5 class="mb-3">Daftar Kategori</h5>
-        <a href="{{ route('Kategori.invoice') }}" class="btn btn-warning"><i class="bx bx-user-plus"></i> Invoice </a>
+        <a href="{{ route('Kategori.invoice') }}" class="btn btn-warning mb-3"><i class="bx bx-user-plus"></i> Invoice </a>
       </div>
       <div class="card-body">
         <div class="table-responsive">
@@ -73,7 +73,8 @@
                 <th>No</th>
                 <th>Kode Kategori</th>
                 <th>Nama Kategori</th>
-
+                <td>Di Buat</td>
+                <td>Di Update</td>
                 <th>Aksi</th>
               </tr>
             </thead>
@@ -83,6 +84,8 @@
                 <td>{{$loop->iteration}}</td>
                 <td>{{ $item->kode_kategori }}</td>
                 <td>{{ $item->nama_kategori }}</td>
+                <td>{{ $item->created_at }}</td>
+                <td>{{ $item->updated_at }}</td> 
                 <td>
                 @if (auth()->user()->role == 'Supervisor' || auth()->user()->role == 'Admin')
                   <button class="btn btn-warning btn-sm editKategori" data-id="{{ $item->id }}" data-kode="{{ $item->kode_kategori }}" data-nama="{{ $item->nama_kategori }}"><i class="bx bx-edit-alt"></i> Edit</button>

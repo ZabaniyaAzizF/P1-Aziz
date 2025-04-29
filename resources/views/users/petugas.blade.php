@@ -115,6 +115,8 @@
                 <th>Telepon</th>
                 <th>Alamat</th>
                 <th>Role</th>
+                <td>Di Buat</td>
+                <td>Di Update</td>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -139,6 +141,8 @@
                     {{ ucfirst($user->role) }}
                   </span>
                 </td>
+                <td>{{ $user->created_at }}</td>
+                <td>{{ $user->updated_at }}</td> 
                 <td>
                   <button 
                   class="btn btn-warning btn-sm editUsers"

@@ -45,13 +45,7 @@
                         <div class="d-grid">
                           <button type="submit" class="btn btn-grd-primary">Login</button>
                         </div>
-                      </div>
-                      
-                      <div class="col-12 mt-2">
-                        <div class="d-grid">
-                          <a href="{{ route('guest.dashboard') }}" class="btn btn-outline-secondary">Masuk sebagai Guest</a>
-                        </div>
-                      </div>                      
+                      </div>                
                     </form>
                   </div>
                   <h5>Don't have account? <a href="{{ route('register.index') }}">Sign Up!</a></h5>

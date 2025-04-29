@@ -45,6 +45,8 @@
                   <th>Telepon</th>
                   <th>Alamat</th>
                   <th>Role</th>
+                  <td>Di Buat</td>
+                  <td>Di Update</td>
                 </tr>
               </thead>
               <tbody>
@@ -68,6 +70,8 @@
                       {{ ucfirst($user->role) }}
                     </span>
                   </td>
+                  <td>{{ $user->created_at }}</td>
+                  <td>{{ $user->updated_at }}</td> 
                 </tr>
                 @endforeach
               </tbody>

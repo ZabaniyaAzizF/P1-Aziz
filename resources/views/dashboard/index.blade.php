@@ -70,11 +70,13 @@
   
         if (data.totalUsers !== undefined) {
           container.innerHTML += createCard("person-circle", data.totalUsers, "Total Akun Pengguna", "primary");
-          container.innerHTML += createCard("book", data.totalBuku, "Total Buku", "success");
+          container.innerHTML += createCard("book", data.totalBukuFisik, "Total Buku Fisik", "success");
+          container.innerHTML += createCard("book", data.totalBukuDigital, "Total Buku Digital", "success");
           container.innerHTML += createCard("tags", data.totalKategori, "Total Kategori", "info");
           container.innerHTML += createCard("tag", data.totalPromo, "Promo Aktif", "warning");
         } else {
           container.innerHTML += createCard("book", data.totalPeminjaman, "Jumlah Peminjaman", "primary");
+          container.innerHTML += createCard("book", data.totalPembelian, "Jumlah Pembelian", "primary");
           container.innerHTML += createCard("wallet", `Rp ${Number(data.totalSaldo).toLocaleString("id-ID")}`, "Saldo Anda", "success");
           container.innerHTML += createCard("credit-card", data.totalTopUp, "Histori Top Up", "info");
           container.innerHTML += createCard("gift", data.totalPromo, "Promo Tersedia", "warning");

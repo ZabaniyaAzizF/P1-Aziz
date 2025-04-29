@@ -19,7 +19,8 @@ return new class extends Migration
             $table->string('method'); // Metode (manual / transfer)
             $table->enum('status', ['pending', 'success', 'failed'])->default('pending'); // Status
             $table->string('bukti_transfer')->nullable(); // Tambahan: path bukti pembayaran
-            $table->timestamp('created_at')->useCurrent(); // Timestamp otomatis
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->useCurrent();
         });
     }
 

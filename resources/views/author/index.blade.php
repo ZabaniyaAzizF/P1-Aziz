@@ -73,6 +73,8 @@
                 <th>No</th>
                 <th>Kode Author</th>
                 <th>Nama Author</th>
+                <td>Di Buat</td>
+                <td>Di Update</td>
                 <th>Aksi</th>
               </tr>
             </thead>
@@ -82,6 +84,8 @@
                 <td>{{$loop->iteration}}</td>
                 <td>{{ $item->kode_author }}</td>
                 <td>{{ $item->nama_author }}</td>
+                <td>{{ $item->created_at }}</td>
+                <td>{{ $item->updated_at }}</td> 
                 <td>
                 @if (auth()->user()->role == 'Supervisor' || auth()->user()->role == 'Admin')
                   <button class="btn btn-warning btn-sm editAuthor" data-id="{{ $item->id }}" data-kode="{{ $item->kode_author }}" data-nama="{{ $item->nama_author }}"><i class="bx bx-edit-alt"></i> Edit</button>

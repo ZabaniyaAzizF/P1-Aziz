@@ -11,15 +11,15 @@ return new class extends Migration
         Schema::create('peminjaman', function (Blueprint $table) {
             $table->string('kode_peminjaman', 10)->primary();
             $table->unsignedBigInteger('user_id');
-            $table->string('kode_books', 8);
+            $table->string('kode_books_fisik', 8);
             $table->date('tanggal_pinjam');
             $table->date('tanggal_kembali');
-            $table->enum('status', ['lunas', 'belum lunas'])->default('belum lunas');
+            $table->enum('status', ['dikembalikan', 'belum dikembalikan'])->default('belum dikembalikan');
             $table->timestamps();
 
             // Relasi
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('kode_books')->references('kode_books')->on('books')->onDelete('cascade');
+            $table->foreign('kode_books_fisik')->references('kode_books_fisik')->on('books_fisik')->onDelete('cascade');
         });
     }
 

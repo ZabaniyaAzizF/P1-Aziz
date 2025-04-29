@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Peminjaman;
-use App\Models\Books;
+use App\Models\Books_fisik;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -44,7 +44,7 @@ class PeminjamanController extends Controller
         ]);
         
         $user = User::find($validated['user_id']);
-        $book = Books::find($kode_books);
+        $book = Books_fisik::find($kode_books);
         
         if (!$user || !$book) {
             return redirect()->back()->withErrors('User atau Buku tidak ditemukan.');
@@ -54,10 +54,9 @@ class PeminjamanController extends Controller
             return redirect()->back()->withErrors('Saldo tidak cukup untuk melakukan peminjaman.');
         }
         
-        // Buat kode peminjaman format PMJ0000001
         $lastPeminjaman = Peminjaman::orderBy('kode_peminjaman', 'desc')->first();
         if ($lastPeminjaman) {
-            $lastNumber = (int) substr($lastPeminjaman->kode_peminjaman, 3); // ambil angka setelah 'PMJ'
+            $lastNumber = (int) substr($lastPeminjaman->kode_peminjaman, 3);
             $newNumber = $lastNumber + 1;
         } else {
             $newNumber = 1;

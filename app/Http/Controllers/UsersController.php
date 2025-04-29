@@ -260,7 +260,7 @@ class UsersController extends Controller
         return view('users.invoice_supervisor', compact('users'));
     }
 
-    public function invoicePertugas(Request $request)
+    public function invoicePetugas(Request $request)
     {
         $users = User::where('role', 'Petugas')->get();
         return view('users.invoice_petugas', compact('users'));

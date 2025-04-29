@@ -61,7 +61,9 @@
                         @else
                           <span class="badge bg-danger">Belum Lunas</span>
                         @endif
-                      </td>                  
+                      </td>
+                      <td>{{ $user->created_at }}</td>
+                      <td>{{ $user->updated_at }}</td>              
                   </tr>
                 @endforeach
               </tbody>

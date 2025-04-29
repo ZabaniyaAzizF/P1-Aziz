@@ -42,6 +42,8 @@
                   <th>No</th>
                   <th>Kode Author</th>
                   <th>Nama Author</th>
+                  <td>Di Buat</td>
+                  <td>Di Update</td>
                 </tr>
               </thead>
               <tbody>
@@ -50,6 +52,8 @@
                   <td>{{$loop->iteration}}</td>
                   <td>{{ $item->kode_author }}</td>
                   <td>{{ $item->nama_author }}</td>
+                  <td>{{ $item->created_at }}</td>
+                  <td>{{ $item->updated_at }}</td> 
                 </tr>
                 @endforeach
               </tbody>

@@ -7,7 +7,7 @@ use App\Models\Kategori;
 use App\Models\Author;
 use App\Models\Publisher;
 use App\Models\User;
-use App\Models\Books;
+use App\Models\Books_fisik;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -68,7 +68,7 @@ class PromoController extends Controller
         $promo = Promo::where('kode_promo', $kode_promo)->first();
     
         if ($promo) {
-            $books = Books::where('kode_kategori', $promo->ref_id)
+            $books = Books_fisik::where('kode_kategori', $promo->ref_id)
                 ->orWhere('kode_author', $promo->ref_id)
                 ->orWhere('kode_publisher', $promo->ref_id)
                 ->get();
@@ -145,7 +145,7 @@ class PromoController extends Controller
     public function delete(Promo $kode_promo)
     {
         // Ambil semua buku yang terpengaruh promo
-        $books = Books::where('kode_kategori', $kode_promo->ref_id)
+        $books = Books_fisik::where('kode_kategori', $kode_promo->ref_id)
             ->orWhere('kode_author', $kode_promo->ref_id)
             ->orWhere('kode_publisher', $kode_promo->ref_id)
             ->get();

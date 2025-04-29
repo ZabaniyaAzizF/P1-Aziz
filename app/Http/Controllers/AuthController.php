@@ -7,7 +7,10 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use App\Models\Books;
+use App\Models\Books_digital;
+use App\Models\Books_fisik;
 use App\Models\Kategori;
+use App\Models\Pembelian;
 use App\Models\Promo;
 use App\Models\Peminjaman;
 use App\Models\Top_ups;
@@ -102,20 +105,22 @@ class AuthController extends Controller
 
             if (in_array($role, ['Admin', 'Supervisor', 'Petugas'])) {
                 return response()->json([
-                    'totalUsers'    => User::count(),
-                    'totalBuku'     => Books::count(),
-                    'totalKategori' => Kategori::count(),
-                    'totalPromo'    => Promo::count(),
+                    'totalUsers'            => User::count(),
+                    'totalBukuFisik'        => Books_digital::count(),
+                    'totalBukuDigital'      => Books_fisik::count(),
+                    'totalKategori'         => Kategori::count(),
+                    'totalPromo'            => Promo::count(),
                 ]);
             }
 
             if ($role === 'Member') {
                 $userId = auth()->id();
                 return response()->json([
-                    'totalPeminjaman' => Peminjaman::where('user_id', $userId)->count(),
-                    'totalSaldo'      => auth()->user()->saldo,
-                    'totalTopUp'      => Top_ups::where('user_id', $userId)->count(),
-                    'totalPromo'      => Promo::count(),
+                    'totalPeminjaman'   => Peminjaman::where('user_id', $userId)->count(),
+                    'totalPembelian'    => Pembelian::where('user_id', $userId)->count(),
+                    'totalSaldo'        => auth()->user()->saldo,
+                    'totalTopUp'        => Top_ups::where('user_id', $userId)->count(),
+                    'totalPromo'        => Promo::count(),
                 ]);
             }
 

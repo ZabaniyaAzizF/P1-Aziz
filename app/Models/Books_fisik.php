@@ -5,23 +5,23 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Books extends Model
+class Books_fisik extends Model
 {
     use HasFactory;
 
-    protected $table = 'books';
+    protected $table = 'books_fisik';
 
-    protected $primaryKey = 'kode_books';
-    protected $keyType = 'string'; // Tipe data primary key adalah string
+    protected $primaryKey = 'kode_books_fisik';
+    protected $keyType = 'string';
     public $incrementing = false;
     protected $fillable = [
-        'kode_books',
+        'kode_books_fisik',
         'title',
         'kode_kategori',
         'kode_publisher',
         'kode_author',
-        'file_url',
-        'file_book',
+        'deskripsi',
+        'isbn',
         'photo',
         'harga',
     ];
@@ -43,7 +43,7 @@ class Books extends Model
 
     public function peminjaman()
     {
-        return $this->hasMany(Peminjaman::class, 'kode_books', 'kode_books');
+        return $this->hasMany(Peminjaman::class, 'kode_books_fisik', 'kode_books_fisik');
     }
     
 }

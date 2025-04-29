@@ -39,22 +39,30 @@
             <table class="table table-striped table-bordered table-hover">
               <thead>
                 <tr>
-                  <th>No</th>
-                  <th>Kode Kategori</th>
-                  <th>Nama Kategori</th>
-                  <td>Di Buat</td>
-                  <td>Di Update</td>
-                </tr>
-              </thead>
-              <tbody>
-                @foreach ($kategori as $item)
-                <tr>
-                  <td>{{$loop->iteration}}</td>
-                  <td>{{ $item->kode_kategori }}</td>
-                  <td>{{ $item->nama_kategori }}</td>
-                  <td>{{ $item->created_at }}</td>
-                  <td>{{ $item->updated_at }}</td> 
-                </tr>
+                    <th>No</th>
+                    <th>Nama Buku</th>
+                    <th>Nama Member</th>
+                    <th>Tanggal Pinjam</th>
+                    <th>Tanggal Kembali</th>
+                    <th>Status Pembayaran</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @foreach ($peminjamans as $peminjam)
+                  <tr>
+                    <td>{{ $loop->iteration }}</td>
+                    <td>{{ $peminjam->buku ? $peminjam->buku->title : 'N/A' }}</td>
+                    <td>{{ $peminjam->user ? $peminjam->user->name : 'N/A' }}</td>
+                    <td>{{ \Carbon\Carbon::parse($peminjam->tanggal_pinjam)->format('d M Y') }}</td>
+                    <td>{{ \Carbon\Carbon::parse($peminjam->tanggal_kembali)->format('d M Y') }}</td>
+                    <td>
+                        @if($peminjam->status === 'lunas')
+                          <span class="badge bg-success">Lunas</span>
+                        @else
+                          <span class="badge bg-danger">Belum Lunas</span>
+                        @endif
+                      </td>                  
+                  </tr>
                 @endforeach
               </tbody>
             </table>

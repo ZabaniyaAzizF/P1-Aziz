@@ -109,6 +109,8 @@
                 <th>Email Member</th>
                 <th>Telepon Member</th>
                 <th>Alamat Member</th>
+                <td>Di Buat</td>
+                <td>Di Update</td>
                 <th>Aksi</th>
               </tr>
             </thead>
@@ -120,6 +122,8 @@
                 <td>{{ $item->email }}</td>
                 <td>{{ $item->telepon }}</td>
                 <td>{{ $item->alamat }}</td>
+                <td>{{ $item->created_at }}</td>
+                <td>{{ $item->updated_at }}</td> 
                 <td>
                 @if (auth()->user()->role == 'Supervisor' || auth()->user()->role == 'Admin')
                 <button 

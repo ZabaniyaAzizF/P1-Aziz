@@ -4,8 +4,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AuthorController;
 use App\Http\Controllers\KategoriController;
-use App\Http\Controllers\GuestController;
-use App\Http\Controllers\BooksController;
+use App\Http\Controllers\BooksFisikController;
+use App\Http\Controllers\BooksDigitalController;
+use App\Http\Controllers\DatabaseController;
 use App\Http\Controllers\TopupController;
 use App\Http\Controllers\MemberController;
 use App\Http\Controllers\PromoController;
@@ -13,6 +14,7 @@ use App\Http\Controllers\PublisherController;
 use App\Http\Controllers\UsersController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\PeminjamanController;
+use App\Http\Controllers\PembelianController;
 
 /*
 |--------------------------------------------------------------------------
@@ -30,16 +32,12 @@ Route::get('/', [AuthController::class, 'index'])
     ->middleware(['guest', 'prevent-back-to-login']);
 Route::post('/login-proses', [AuthController::class, 'login_proses'])->name('login-proses');
 
-Route::get('/dashboard', [GuestController::class, 'index'])->name('guest.dashboard');
-
-Route::get('/Books', [GuestController::class, 'indexBooks'])->name('guest.books');
-
 // Rute Register
 Route::get('/register', [AuthController::class, 'register'])->name('register.index');
 Route::post('/register/store', [AuthController::class, 'registerStore'])->name('register.store');
 
 // Rute logout
-Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 
 // Rute setelah login
 Route::middleware(['auth'])->group(function () {
@@ -47,6 +45,12 @@ Route::middleware(['auth'])->group(function () {
         return view('dashboard.index');
     })->name('Dashboard');
     Route::get('/dashboard/data', [AuthController::class, 'getData'])->name('dashboard.data');
+
+    Route::prefix('Database')->name('Database.')->group(function () {
+        Route::get('/', [DatabaseController::class, 'index'])->name('index');
+        Route::get('/backup', [DatabaseController::class, 'backup'])->name('backup');
+        Route::post('/restore', [DatabaseController::class, 'restore'])->name('restore');
+    });
 
     //Route Users
     Route::get('/users', [UsersController::class, 'index'])->name('users.index');
@@ -82,7 +86,6 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/invoice', [UsersController::class, 'invoicePetugas'])->name('users.petugas.invoice');
     });    
 
-    // Route Member
     Route::prefix('Member')->name('Member.')->group(function () {
         Route::get('/', [MemberController::class, 'index'])->name('index');
         Route::post('/', [MemberController::class, 'store'])->name('store');
@@ -90,7 +93,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/invoice', [MemberController::class, 'invoice'])->name('invoice');
         
         // Sudah ada sebelumnya:
-        Route::get('/books', [BooksController::class, 'indexMember'])->name('Books.index');
+        Route::get('/books', [BooksFisikController::class, 'indexMember'])->name('Books_Fisik.index');
         Route::get('/promo', [PromoController::class, 'indexMember'])->name('Promo.index');
         Route::get('/peminjaman', [MemberController::class, 'riwayatPeminjaman'])->name('Peminjaman.index');
         Route::get('/pengembalian', [MemberController::class, 'riwayatPengembalian'])->name('Pengembalian.index');
@@ -124,19 +127,33 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/invoice', [PublisherController::class, 'invoice'])->name('invoice');
     });
 
-    // Route Books
-    Route::prefix('Books')->group(function () {
-        Route::get('/', [BooksController::class, 'indexBooks'])->name('Books.index');
-        Route::get('/member', [BooksController::class, 'indexMember'])->name('Member.books.index');
+    // Route Books Digital
+    Route::prefix('Books_fisik')->name('Books_fisik.')->group(function () {
+        Route::get('/', [BooksFisikController::class, 'index'])->name('index');
+        Route::get('/member', [BooksFisikController::class, 'indexMember'])->name('member.index');
     
-        Route::post('/', [BooksController::class, 'storeBooks'])->name('Books.store');
+        Route::post('/', [BooksFisikController::class, 'store'])->name('store');
     
-        // Ganti {id} menjadi {kode_books} untuk konsisten
-        Route::put('/{kode_books}', [BooksController::class, 'update'])->name('Books.update');
+        Route::put('/{kode_books_fisik}', [BooksFisikController::class, 'update'])->name('update');
     
-        Route::delete('/{kode_books}', [BooksController::class, 'delete'])->name('Books.delete');
+        Route::delete('/{kode_books_fisik', [BooksFisikController::class, 'delete'])->name('delete');
     
-        Route::get('/invoice', [BooksController::class, 'invoice'])->name('Books.invoice');
+        Route::get('/invoice', [BooksFisikController::class, 'invoice'])->name('invoice');
+    });    
+
+
+    // Route Books Digital
+    Route::prefix('Books_digital')->name('Books_digital.')->group(function () {
+        Route::get('/', [BooksDigitalController::class, 'index'])->name('index');
+        Route::get('/member', [BooksDigitalController::class, 'indexMember'])->name('member.index');
+    
+        Route::post('/', [BooksDigitalController::class, 'store'])->name('store');
+    
+        Route::put('/{kode_books_digital}', [BooksDigitalController::class, 'update'])->name('update');
+    
+        Route::delete('/{kode_books_digital}', [BooksDigitalController::class, 'delete'])->name('delete');
+    
+        Route::get('/invoice', [BooksDigitalController::class, 'invoice'])->name('invoice');
     });    
 
     // Top Up Route
@@ -173,14 +190,13 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/invoice', [PeminjamanController::class, 'invoice'])->name('invoice');
     });
 
-    //Route Pengembalian
-    Route::prefix('Pengembalian')->group(function () {
-        Route::get('/', [UsersController::class, 'indexPengembalian'])->name('Pengembalian.index');
-        Route::get('/member', [UsersController::class, 'indexPeminjaman'])->name('Member.peminjaman.index');
-        Route::post('/store', [UsersController::class, 'storePengembalian'])->name('Pengembalian.store');
-        Route::put('/{id}', [UsersController::class, 'storePengembalian'])->name('Pengembalian.update');
-        Route::delete('/{id}', [UsersController::class, 'delete'])->name('Pengembalian.delete');
-        Route::get('/invoice', [UsersController::class, 'invoice'])->name('Pengembalian.invoice');
+    Route::prefix('Pembelian')->name('Pembelian.')->group(function () {
+        Route::get('/', [PembelianController::class, 'index'])->name('index');
+        Route::get('/member', [PembelianController::class, 'indexMember'])->name('member.index');
+        Route::post('/store/{kode_books}', [PembelianController::class, 'store'])->name('store');
+        Route::put('/{id}', [PembelianController::class, 'update'])->name('update');
+        Route::delete('/delete/{kode_books}', [PembelianController::class, 'destroy'])->name('delete');
+        Route::get('/invoice', [PembelianController::class, 'invoice'])->name('invoice');
     });
 
 });

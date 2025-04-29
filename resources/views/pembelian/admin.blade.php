@@ -10,25 +10,25 @@
 
     <!-- Breadcrumb -->
     <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
-      <div class="breadcrumb-title pe-3">Peminjaman</div>
+      <div class="breadcrumb-title pe-3">Pembelian</div>
       <div class="ms-auto">
         <nav aria-label="breadcrumb">
           <ol class="breadcrumb mb-0 p-0">
             <li class="breadcrumb-item"><a href="#"><i class="bx bx-home-alt"></i></a></li>
-            <li class="breadcrumb-item active" aria-current="page">Peminjaman</li>
+            <li class="breadcrumb-item active" aria-current="page">Pembelian</li>
           </ol>
         </nav>
       </div>
     </div>
     <!-- End Breadcrumb -->
 
-    <!-- Peminjaman Table -->
-    <h6 class="mb-3 text-uppercase">Peminjaman Buku</h6>
+    <!-- Pembelian Table -->
+    <h6 class="mb-3 text-uppercase">Pembelian Buku Digital</h6>
 
     <div class="card">
       <div class="card-header bg-primary text-white">
-        <h5 class="mb-3">Daftar Peminjaman</h5>
-        <a href="{{ route('Peminjaman.invoice') }}" class="btn btn-warning"><i class="bx bx-bookmark-plus"></i> Invoice </a>
+        <h5 class="mb-3">Daftar Pembelian Digital</h5>
+        <a href="{{ route('Pembelian.invoice') }}" class="btn btn-warning"><i class="bx bx-bookmark-plus"></i> Invoice </a>
       </div>
       <div class="card-body">
         <div class="table-responsive">
@@ -41,6 +41,7 @@
                 <th>Tanggal Pinjam</th>
                 <th>Tanggal Kembali</th>
                 <th>Status Pembayaran</th>
+                {{-- <th>Actions</th> --}}
               </tr>
             </thead>
             <tbody>
@@ -57,9 +58,7 @@
                     @else
                       <span class="badge bg-danger">Belum Lunas</span>
                     @endif
-                  </td>
-                  <td>{{ $user->created_at }}</td>
-                  <td>{{ $user->updated_at }}</td> 
+                  </td>                  
               </tr>
               @endforeach
             </tbody>
