@@ -49,8 +49,10 @@ Route::middleware(['auth'])->group(function () {
     Route::prefix('Database')->name('Database.')->group(function () {
         Route::get('/', [DatabaseController::class, 'index'])->name('index');
         Route::get('/backup', [DatabaseController::class, 'backup'])->name('backup');
+        Route::get('/backup/download', [DatabaseController::class, 'downloadBackup'])->name('downloadBackup'); // Added download route
         Route::post('/restore', [DatabaseController::class, 'restore'])->name('restore');
     });
+    
 
     //Route Users
     Route::get('/users', [UsersController::class, 'index'])->name('users.index');

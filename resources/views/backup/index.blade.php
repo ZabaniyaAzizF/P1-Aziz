@@ -1,4 +1,5 @@
 @extends('layout.template')
+
 @section('content')
 
 @include('layout.navbar')
@@ -34,25 +35,27 @@
             <i class="bx bx-cloud-download"></i> Backup Database
           </a>
 
-          <!-- Restore Form -->
+
+          {{-- <!-- Restore Form -->
           <form action="{{ route('Database.restore') }}" method="POST" enctype="multipart/form-data">
             @csrf
             <label class="btn btn-warning mb-0">
               <i class="bx bx-cloud-upload"></i> Restore Database
               <input type="file" name="backup_file" accept=".sql" onchange="this.form.submit()" hidden>
             </label>
-          </form>
+          </form> --}}
         </div>
 
-        @if(session('success'))
+          @if (session('success'))
           <div class="alert alert-success mt-3">
-            {{ session('success') }}
+              {{ session('success') }}
+              <a href="{{ route('Database.downloadBackup') }}" class="btn btn-primary">Download Backup</a>
           </div>
-        @elseif(session('error'))
+      @elseif(session('error'))
           <div class="alert alert-danger mt-3">
-            {{ session('error') }}
+              {{ session('error') }}
           </div>
-        @endif
+      @endif
       </div>
     </div>
     <!-- End Backup & Restore Section -->
