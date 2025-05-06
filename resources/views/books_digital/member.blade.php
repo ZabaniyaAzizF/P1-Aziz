@@ -27,7 +27,9 @@
                 <select id="categoryFilter" class="form-select">
                     <option value="">Semua Kategori</option>
                     @foreach($kategoriList as $category)
-                        <option value="{{ $category->kode_kategori }}">{{ $category->nama_kategori }}</option>
+                        <option value="{{ $category->kode_kategori }}" {{ request('category') == $category->kode_kategori ? 'selected' : '' }}>
+                            {{ $category->nama_kategori }}
+                        </option>
                     @endforeach
                 </select>
             </div>
@@ -35,18 +37,12 @@
                 <select id="publisherFilter" class="form-select">
                     <option value="">Semua Penerbit</option>
                     @foreach($publisherList as $publisher)
-                        <option value="{{ $publisher->kode_publisher }}">{{ $publisher->nama_publisher }}</option>
+                        <option value="{{ $publisher->kode_publisher }}" {{ request('publisher') == $publisher->kode_publisher ? 'selected' : '' }}>
+                            {{ $publisher->nama_publisher }}
+                        </option>
                     @endforeach
                 </select>
             </div>
-            {{-- <div class="col-md-3">
-                <select id="publisherFilter" class="form-select">
-                    <option value="">Semua Author</option>
-                    @foreach(authorList as $author)
-                        <option value="{{ $author->kode_author }}">{{ $author->nama_author }}</option>
-                    @endforeach
-                </select>
-            </div> --}}
         </div>
 
         <hr class="my-5">
@@ -63,7 +59,7 @@
                         alt="Foto Buku" 
                         style="cursor: pointer;" 
                         data-bs-toggle="modal" 
-                        data-bs-target="#bookModal{{ $book->kode_books }}"
+                        data-bs-target="#bookModal{{ $book->kode_books_digital }}"
                     >
                     <div class="card-body text-center">
                         <h6 class="card-title text-truncate mb-0" title="{{ $book->title }}">
@@ -76,11 +72,11 @@
             </div>
 
             <!-- Modal -->
-            <div class="modal fade" id="bookModal{{ $book->kode_books }}" tabindex="-1" aria-labelledby="bookModalLabel{{ $book->kode_books }}" aria-hidden="true">
+            <div class="modal fade" id="bookModal{{ $book->kode_books_digital }}" tabindex="-1" aria-labelledby="bookModalLabel{{ $book->kode_books_digital }}" aria-hidden="true">
                 <div class="modal-dialog modal-lg modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="bookModalLabel{{ $book->kode_books }}">{{ $book->title }}</h5>
+                            <h5 class="modal-title" id="bookModalLabel{{ $book->kode_books_digital }}">{{ $book->title }}</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
                         </div>
                         <div class="modal-body row">
@@ -93,34 +89,29 @@
                                     <li class="list-group-item"><strong>Penerbit:</strong> {{ $book->publisher->nama_publisher ?? '-' }}</li>
                                     <li class="list-group-item"><strong>Pengarang:</strong> {{ $book->author->nama_author ?? '-' }}</li>
                                     <li class="list-group-item"><strong>Harga:</strong> Rp{{ number_format($book->harga, 0, ',', '.') }}</li>
-                                    @php
-                                    $sudahBayar = in_array($book->kode_books, $pembayaranUser ?? []);
-                                @endphp
-                                
-                                <li class="list-group-item">
-                                    <strong>File Buku:</strong>
-                                    @if(in_array($book->kode_books, $userPembayaran))
-                                        <a href="{{ asset('storage/uploads/books/pdf/' . $book->file_book) }}" target="_blank">Lihat File</a>
-                                    @elseif(auth()->user()->role === 'Member')
-                                        @if(auth()->user()->saldo >= $book->harga)
-                                            <form method="POST" action="{{ route('Peminjaman.store', $book->kode_books) }}">
-                                                @csrf
-                                                <input type="hidden" name="kode_books" value="{{ $book->kode_books }}">
-                                                <input type="hidden" name="user_id" value="{{ auth()->user()->id }}">
-                                                <label for="tanggal_pinjam">Tanggal Pinjam</label>
-                                                <input type="date" name="tanggal_pinjam" class="form-control mb-2" required>
-                                                <label for="tanggal_kembali">Tanggal Kembali</label>
-                                                <input type="date" name="tanggal_kembali" class="form-control mb-2" required>                                            
-                                                <button type="submit" class="btn btn-sm btn-success">Bayar Rp{{ number_format($book->harga, 0, ',', '.') }}</button>
-                                            </form>
+                                    <li class="list-group-item">
+                                        <strong>Status Pembayaran:</strong> 
+                                        @if(in_array($book->kode_books_digital, $pembelianUser))
+                                            <span class="badge bg-success">Sudah Dibayar</span>
+                                            <!-- Tampilkan link PDF jika sudah dibayar -->
+                                            <br>
+                                            @if($book->file_book)
+                                                <a href="{{ asset('storage/uploads/books/pdf/' . $book->file_book) }}" target="_blank" class="btn btn-secondary mt-3">Unduh Buku</a>
+                                            @else
+                                                <span class="text-danger mt-3">PDF tidak tersedia.</span>
+                                            @endif
                                         @else
-                                            <span class="text-danger">Saldo tidak cukup</span>
+                                            <span class="badge bg-danger">Belum Dibayar</span>
+                                            @if(!in_array($book->kode_books_digital, $pembelianUser))
+                                                <form action="{{ route('Pembelian.bayar') }}" method="POST" class="mt-3">
+                                                    @csrf
+                                                    <input type="hidden" name="kode_books_digital" value="{{ $book->kode_books_digital }}">
+                                                    <input type="hidden" name="harga" value="{{ $book->harga }}">
+                                                    <button type="submit" class="btn btn-primary">Bayar Sekarang</button>
+                                                </form>
+                                            @endif
                                         @endif
-                                    @else
-                                        <span class="text-muted">Hanya untuk member</span>
-                                    @endif
-                                </li>
-                                
+                                    </li>
                                 </ul>
                             </div>
                         </div>
@@ -133,12 +124,10 @@
             </div>
             @endforelse
         </div>
-                </tbody>
-            </table>
-        </div>
 
     </div>
 </main>
+
 <style>
     .book-card:hover {
         transform: translateY(-5px);
@@ -150,6 +139,7 @@
         height: 200px;
     }
 </style>
+
 @include('layout.footer')
 
 <script>
@@ -160,25 +150,13 @@
         let category = document.getElementById('categoryFilter').value;
         let publisher = document.getElementById('publisherFilter').value;
 
-        // Construct the URL with query parameters
-        let url = new URL('{{ url("Books/member") }}'); // Using Blade to get the base URL
-        let params = new URLSearchParams(url.search); // Get current query parameters if any
+        let url = new URL('{{ url("pembelian/member") }}');
+        let params = new URLSearchParams();
 
-        // Set or update the query parameters
-        if (category) {
-            params.set('category', category);
-        } else {
-            params.delete('category');
-        }
+        if (category) params.set('category', category);
+        if (publisher) params.set('publisher', publisher);
 
-        if (publisher) {
-            params.set('publisher', publisher);
-        } else {
-            params.delete('publisher');
-        }
-
-        // Reload the page with the updated query parameters
-        window.location.href = url.origin + url.pathname + '?' + params.toString();
+        window.location.href = url.href + '?' + params.toString();
     }
 </script>
 

@@ -37,7 +37,7 @@ Route::get('/register', [AuthController::class, 'register'])->name('register.ind
 Route::post('/register/store', [AuthController::class, 'registerStore'])->name('register.store');
 
 // Rute logout
-Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 // Rute setelah login
 Route::middleware(['auth'])->group(function () {
@@ -95,8 +95,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/invoice', [MemberController::class, 'invoice'])->name('invoice');
         
         // Sudah ada sebelumnya:
-        Route::get('/books', [BooksFisikController::class, 'indexMember'])->name('Books_Fisik.index');
-        Route::get('/promo', [PromoController::class, 'indexMember'])->name('Promo.index');
+        // Route::get('/books-fisik', [BooksFisikController::class, 'indexMember'])->name('Books-Fisik.index');
+        // Route::get('/books-digital', [BooksDigitalController::class, 'indexMember'])->name('Books-Digital.index');
         Route::get('/peminjaman', [MemberController::class, 'riwayatPeminjaman'])->name('Peminjaman.index');
         Route::get('/pengembalian', [MemberController::class, 'riwayatPengembalian'])->name('Pengembalian.index');
     });
@@ -129,16 +129,16 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/invoice', [PublisherController::class, 'invoice'])->name('invoice');
     });
 
-    // Route Books Digital
+    // Route Books Fisik
     Route::prefix('Books_fisik')->name('Books_fisik.')->group(function () {
         Route::get('/', [BooksFisikController::class, 'index'])->name('index');
         Route::get('/member', [BooksFisikController::class, 'indexMember'])->name('member.index');
     
         Route::post('/', [BooksFisikController::class, 'store'])->name('store');
     
-        Route::put('/{kode_books_fisik}', [BooksFisikController::class, 'update'])->name('update');
+        Route::put('/update/{kode_books_fisik}', [BooksFisikController::class, 'update'])->name('update');
     
-        Route::delete('/{kode_books_fisik', [BooksFisikController::class, 'delete'])->name('delete');
+        Route::delete('/delete/{kode_books_fisik}', [BooksFisikController::class, 'delete'])->name('delete');
     
         Route::get('/invoice', [BooksFisikController::class, 'invoice'])->name('invoice');
     });    
@@ -185,19 +185,17 @@ Route::middleware(['auth'])->group(function () {
 
     Route::prefix('Peminjaman')->name('Peminjaman.')->group(function () {
         Route::get('/', [PeminjamanController::class, 'index'])->name('index');
+        Route::post('/store/{kode_books_fisik}', [PeminjamanController::class, 'store'])->name('store');
         Route::get('/member', [PeminjamanController::class, 'indexMember'])->name('member.index');
-        Route::post('/store/{kode_books}', [PeminjamanController::class, 'store'])->name('store');
-        Route::put('/{id}', [PeminjamanController::class, 'update'])->name('update');
-        Route::delete('/delete/{kode_books}', [PeminjamanController::class, 'destroy'])->name('delete');
         Route::get('/invoice', [PeminjamanController::class, 'invoice'])->name('invoice');
+        Route::put('/kembalikan/{kode_books_fisik}', [PeminjamanController::class, 'kembalikan'])->name('kembalikan');
     });
+    
 
     Route::prefix('Pembelian')->name('Pembelian.')->group(function () {
         Route::get('/', [PembelianController::class, 'index'])->name('index');
         Route::get('/member', [PembelianController::class, 'indexMember'])->name('member.index');
-        Route::post('/store/{kode_books}', [PembelianController::class, 'store'])->name('store');
-        Route::put('/{id}', [PembelianController::class, 'update'])->name('update');
-        Route::delete('/delete/{kode_books}', [PembelianController::class, 'destroy'])->name('delete');
+        Route::post('/pembelian/bayar', [PembelianController::class, 'bayar'])->name('bayar');
         Route::get('/invoice', [PembelianController::class, 'invoice'])->name('invoice');
     });
 

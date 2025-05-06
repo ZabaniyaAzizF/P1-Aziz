@@ -31,7 +31,7 @@
       </div>
       <div class="card-body">
         <div class="table-responsive">
-          <table id="example2" class="table table-striped table-hover table-bordered">
+          <table id="example2" class="table table-striped table-hover table-bordered table-sm">
             <thead class="table-dark">
               <tr>
                 <th>No</th>
@@ -39,22 +39,24 @@
                 <th>Nama Member</th>
                 <th>Tanggal Beli</th>
                 <th>Status Pembayaran</th>
+                <td>Di Buat</td>
+                <td>Di Update</td>
               </tr>
             </thead>
             <tbody>
-              @foreach ($peminjamans as $peminjam)
+              @foreach ($pembelians as $pembelian)
               <tr>
                 <td>{{ $loop->iteration }}</td>
-                <td>{{ $peminjam->buku ? $peminjam->buku->title : 'N/A' }}</td>
-                <td>{{ $peminjam->user ? $peminjam->user->name : 'N/A' }}</td>
-                <td>{{ \Carbon\Carbon::parse($peminjam->tanggal_pinjam)->format('d M Y') }}</td>
+                <td>{{ $pembelian->buku_digital ? $pembelian->buku_digital->title : 'N/A' }}</td>
+                <td>{{ $pembelian->user ? $pembelian->user->name : 'N/A' }}</td>
+                <td>{{ \Carbon\Carbon::parse($pembelian->tanggal_beli)->format('d M Y') }}</td>
                 <td>
-                    @if($peminjam->status === 'lunas')
+                    @if($pembelian->status === 'lunas')
                       <span class="badge bg-success">Lunas</span>
-                    @else
-                      <span class="badge bg-danger">Belum Lunas</span>
                     @endif
-                  </td>                  
+                </td>
+                <td>{{ $pembelian->created_at }}</td>
+                <td>{{ $pembelian->updated_at }}</td> 
               </tr>
               @endforeach
             </tbody>
@@ -62,7 +64,7 @@
         </div>
       </div>
     </div>
-    <!-- End Peminjaman Table -->
+    <!-- End Pembelian Table -->
   </div>
 </main>
 <!-- End Main Wrapper -->

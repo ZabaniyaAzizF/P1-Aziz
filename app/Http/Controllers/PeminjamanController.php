@@ -16,7 +16,7 @@ class PeminjamanController extends Controller
      */
     public function index()
     {
-        $peminjamans = Peminjaman::with(['user', 'buku'])->get();
+        $peminjamans = Peminjaman::with(['user', 'buku_fisik'])->get();
     
         return view('peminjaman.admin', compact('peminjamans'));
     }    
@@ -25,7 +25,7 @@ class PeminjamanController extends Controller
     {
         $user = auth()->user();
     
-        $peminjamans = Peminjaman::with(['user', 'buku'])
+        $peminjamans = Peminjaman::with(['user', 'buku_fisik'])
                                  ->where('user_id', $user->id)
                                  ->get();
     
@@ -35,7 +35,7 @@ class PeminjamanController extends Controller
     /**
      * Menyimpan data peminjaman
      */
-    public function store(Request $request, $kode_books)
+    public function store(Request $request, $kode_books_fisik)
     {  
         $validated = $request->validate([
             'user_id' => 'required|exists:users,id',
@@ -44,7 +44,7 @@ class PeminjamanController extends Controller
         ]);
         
         $user = User::find($validated['user_id']);
-        $book = Books_fisik::find($kode_books);
+        $book = Books_fisik::find($kode_books_fisik);
         
         if (!$user || !$book) {
             return redirect()->back()->withErrors('User atau Buku tidak ditemukan.');
@@ -75,10 +75,9 @@ class PeminjamanController extends Controller
         $peminjaman = Peminjaman::create([
             'kode_peminjaman' => $kodePeminjaman,
             'user_id' => $validated['user_id'],
-            'kode_books' => $kode_books,
+            'kode_books_fisik' => $kode_books_fisik,
             'tanggal_pinjam' => $validated['tanggal_pinjam'],
             'tanggal_kembali' => $validated['tanggal_kembali'],
-            'status' => 'lunas',
         ]);
         
         if (!$peminjaman) {
@@ -89,21 +88,27 @@ class PeminjamanController extends Controller
     }      
 
     /**
-     * Mengupdate peminjaman
+     * Mengembalikan buku yang dipinjam
      */
-    public function update(Request $request, $id)
+    public function kembalikan(Request $request, $kode_books_fisik)
     {
-        // Validasi input
-        $validated = $request->validate([
-            'tanggal_kembali' => 'required|date|after_or_equal:tanggal_pinjam',
-        ]);
+        $user = auth()->user();
 
-        // Update data peminjaman
-        $peminjaman = Peminjaman::findOrFail($id);
-        $peminjaman->tanggal_kembali = $validated['tanggal_kembali'];
+        // Cari peminjaman yang belum dikembalikan oleh user
+        $peminjaman = Peminjaman::where('kode_books_fisik', $kode_books_fisik)
+                                ->where('user_id', $user->id)
+                                ->where('status', 'dipinjam')
+                                ->first();
+
+        if (!$peminjaman) {
+            return redirect()->route('Peminjaman.member.index')->withErrors('Buku tidak ditemukan dalam peminjaman Anda.');
+        }
+
+        // Update status peminjaman menjadi 'dikembalikan'
+        $peminjaman->status = 'dikembalikan';
         $peminjaman->save();
 
-        return redirect()->route('Peminjaman.index')->with('success', 'Peminjaman berhasil diperbarui.');
+        return redirect()->route('Peminjaman.member.index')->with('success', 'Buku berhasil dikembalikan.');
     }
 
     /**

@@ -81,10 +81,11 @@
                   'title' => 'Transaksi',
                   'icon' => 'point_of_sale',
                   'children' => [
-                    ['title' => 'Buku', 'icon' => 'book', 'route' => 'Books_fisik.member.index'],
+                    ['title' => 'Buku Fisik', 'icon' => 'book', 'route' => 'Books_fisik.member.index'],
+                    ['title' => 'Buku Digital', 'icon' => 'book', 'route' => 'Books_digital.member.index'],
                     ['title' => 'Top Up', 'icon' => 'local_offer', 'route' => 'Topup.member.index'],
                     ['title' => 'Riwayat Peminjaman', 'icon' => 'shopping_cart_checkout', 'route' => 'Peminjaman.member.index'],
-                    ['title' => 'Riwayat Pengembalian', 'icon' => 'assignment_return', 'route' => 'Member.Pengembalian.index'],
+                    ['title' => 'Riwayat Pembelian', 'icon' => 'assignment_return', 'route' => 'Pembelian.member.index'],
                   ]
                 ]
               ]

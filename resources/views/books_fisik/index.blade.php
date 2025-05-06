@@ -34,95 +34,96 @@
                             @method('PUT')
                         @endif
                         <?php $kodeBook = autonumber('books_fisik', 'kode_books_fisik', 5, 'BKF'); ?>
-                        <!-- Kode Buku -->
-                        <div class="row mb-3">
-                            <label for="kode_books" class="col-sm-3 col-form-label">Kode Buku</label>
-                            <div class="col-sm-9">
-                                <input type="text" class="form-control" id="kode_books_fisik" name="kode_books_fisik" value="{{ old('kode_books_fisik', isset($book) ? $book->kode_books_fisik : $kodeBook) }}" readonly required>
+                        
+                        <div class="row g-3">
+                            <!-- Kode Buku -->
+                            <div class="col-md-6">
+                                <label for="kode_books_fisik" class="form-label">Kode Buku</label>
+                                <input type="text" class="form-control" id="kode_books_fisik" name="kode_books_fisik"
+                                    value="{{ old('kode_books_fisik', $book->kode_books_fisik ?? $kodeBook) }}" readonly required>
                             </div>
-                        </div>
-    
-                        <!-- Judul Buku -->
-                        <div class="row mb-3">
-                            <label for="title" class="col-sm-3 col-form-label">Judul Buku</label>
-                            <div class="col-sm-9">
-                                <input type="text" class="form-control" id="title" name="title" value="{{ old('title', $book->title ?? '') }}" required>
+                    
+                            <!-- Judul Buku -->
+                            <div class="col-md-6">
+                                <label for="title" class="form-label">Judul Buku</label>
+                                <input type="text" class="form-control" id="title" name="title"
+                                    value="{{ old('title', $book->title ?? '') }}" required>
                             </div>
-                        </div>
-    
-                        <!-- Kategori -->
-                        <div class="row mb-3">
-                            <label for="kode_kategori" class="col-sm-3 col-form-label">Kategori</label>
-                            <div class="col-sm-9">
+                    
+                            <!-- ISBN -->
+                            <div class="col-md-6">
+                                <label for="isbn" class="form-label">ISBN</label>
+                                <input type="text" class="form-control" id="isbn" name="isbn"
+                                    value="{{ old('isbn', $book->isbn ?? '') }}">
+                            </div>
+                    
+                            <!-- Harga -->
+                            <div class="col-md-6">
+                                <label for="harga" class="form-label">Harga</label>
+                                <input type="number" class="form-control" id="harga" name="harga" step="0.01"
+                                    value="{{ old('harga', $book->harga ?? '') }}" required>
+                            </div>
+                    
+                            <!-- Kategori -->
+                            <div class="col-md-6">
+                                <label for="kode_kategori" class="form-label">Kategori</label>
                                 <select class="form-select" id="kode_kategori" name="kode_kategori" required>
                                     <option value="">-- Pilih Kategori --</option>
                                     @foreach ($kategori as $kat)
-                                        <option value="{{ $kat->kode_kategori }}" {{ isset($book) && $book->kode_kategori == $kat->kode_kategori ? 'selected' : '' }}>{{ $kat->nama_kategori }}</option>
+                                        <option value="{{ $kat->kode_kategori }}" {{ old('kode_kategori', $book->kode_kategori ?? '') == $kat->kode_kategori ? 'selected' : '' }}>
+                                            {{ $kat->nama_kategori }}
+                                        </option>
                                     @endforeach
                                 </select>
                             </div>
-                        </div>
-    
-                        <!-- Author -->
-                        <div class="row mb-3">
-                            <label for="kode_author" class="col-sm-3 col-form-label">Author</label>
-                            <div class="col-sm-9">
+                    
+                            <!-- Author -->
+                            <div class="col-md-6">
+                                <label for="kode_author" class="form-label">Author</label>
                                 <select class="form-select" id="kode_author" name="kode_author" required>
                                     <option value="">-- Pilih Author --</option>
                                     @foreach ($authors as $auth)
-                                        <option value="{{ $auth->kode_author }}" {{ isset($book) && $book->kode_author == $auth->kode_author ? 'selected' : '' }}>{{ $auth->nama_author }}</option>
+                                        <option value="{{ $auth->kode_author }}" {{ old('kode_author', $book->kode_author ?? '') == $auth->kode_author ? 'selected' : '' }}>
+                                            {{ $auth->nama_author }}
+                                        </option>
                                     @endforeach
                                 </select>
                             </div>
-                        </div>
-    
-                        <!-- Publisher -->
-                        <div class="row mb-3">
-                            <label for="kode_publisher" class="col-sm-3 col-form-label">Publisher</label>
-                            <div class="col-sm-9">
+                    
+                            <!-- Publisher -->
+                            <div class="col-md-6">
+                                <label for="kode_publisher" class="form-label">Publisher</label>
                                 <select class="form-select" id="kode_publisher" name="kode_publisher" required>
                                     <option value="">-- Pilih Publisher --</option>
                                     @foreach ($publishers as $pub)
-                                        <option value="{{ $pub->kode_publisher }}" {{ isset($book) && $book->kode_publisher == $pub->kode_publisher ? 'selected' : '' }}>{{ $pub->nama_publisher }}</option>
+                                        <option value="{{ $pub->kode_publisher }}" {{ old('kode_publisher', $book->kode_publisher ?? '') == $pub->kode_publisher ? 'selected' : '' }}>
+                                            {{ $pub->nama_publisher }}
+                                        </option>
                                     @endforeach
                                 </select>
                             </div>
-                        </div>
-    
-                        <!-- Harga -->
-                        <div class="row mb-3">
-                            <label for="harga" class="col-sm-3 col-form-label">Harga</label>
-                            <div class="col-sm-9">
-                                <input type="number" class="form-control" id="harga" name="harga" step="0.01" value="{{ old('harga', $book->harga ?? '') }}" required>
-                            </div>
-                        </div>
-    
-                        <!-- Deskripsi -->
-                        <div class="row mb-3">
-                            <label for="deskripsi" class="col-sm-3 col-form-label">Deskripsi</label>
-                            <div class="col-sm-9">
-                                <textarea class="form-control" id="deskripsi" name="deskripsi">{{ old('deskripsi', $book->deskripsi ?? '') }}</textarea>
-                            </div>
-                        </div>
-    
-                        <!-- Upload Cover Buku -->
-                        <div class="row mb-3">
-                            <label for="photo" class="col-sm-3 col-form-label">Cover Buku</label>
-                            <div class="col-sm-9">
+                    
+                            <!-- Cover Buku -->
+                            <div class="col-md-6">
+                                <label for="photo" class="form-label">Cover Buku</label>
                                 <input type="file" class="form-control" id="photo" name="photo">
                                 @if(isset($book) && $book->photo)
-                                    <img src="{{ asset('storage/'.$book->photo) }}" width="100" alt="Cover Buku">
+                                    <img src="{{ asset('storage/'.$book->photo) }}" width="100" class="mt-2" alt="Cover Buku">
                                 @endif
                             </div>
-                        </div>
-    
-                        <!-- Submit Button -->
-                        <div class="row">
-                            <div class="col-sm-9 offset-sm-3">
+                    
+                            <!-- Deskripsi -->
+                            <div class="col-12">
+                                <label for="deskripsi" class="form-label">Deskripsi</label>
+                                <textarea class="form-control" id="deskripsi" name="deskripsi" rows="4">{{ old('deskripsi', $book->deskripsi ?? '') }}</textarea>
+                            </div>
+                    
+                            <!-- Submit -->
+                            <div class="col-12">
                                 <button type="submit" class="btn btn-primary px-4">Simpan</button>
                             </div>
                         </div>
-                    </form>
+                    </form>                    
                 </div>
             </div>
         </div>
@@ -235,27 +236,27 @@
             </div>
             <div class="modal-body">
                 <div class="mb-3">
-                    <strong>Judul Buku:</strong>
+                    <strong>Judul Buku :</strong>
                     <p id="detailTitle"></p>
                 </div>
                 <div class="mb-3">
-                    <strong>Kategori:</strong>
+                    <strong>Kategori :</strong>
                     <p id="detailKategori"></p>
                 </div>
                 <div class="mb-3">
-                    <strong>Author:</strong>
+                    <strong>Author :</strong>
                     <p id="detailAuthor"></p>
                 </div>
                 <div class="mb-3">
-                    <strong>Publisher:</strong>
+                    <strong>Publisher :</strong>
                     <p id="detailPublisher"></p>
                 </div>
                 <div class="mb-3">
-                    <strong>Harga:</strong>
+                    <strong>Harga :</strong>
                     <p id="detailHarga"></p>
                 </div>
                 <div class="mb-3">
-                    <strong>Link Deskripsi:</strong>
+                    <strong>Deskripsi :</strong>
                     <p id="detailDeskripsi"></p>
                 </div>
             </div>            

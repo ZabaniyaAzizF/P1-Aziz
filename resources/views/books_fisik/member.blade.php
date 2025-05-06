@@ -21,7 +21,7 @@
             </div>
         </div>
 
-        <!-- Form Filter -->
+        <!-- Filter Form -->
         <div class="row mb-4">
             <div class="col-md-3">
                 <select id="categoryFilter" class="form-select">
@@ -59,8 +59,7 @@
                     >
                     <div class="card-body text-center">
                         <h6 class="card-title text-truncate mb-0" title="{{ $book->title }}">
-                            {{ $book->title }}
-                            <br>
+                            {{ $book->title }}<br>
                             Rp{{ number_format($book->harga, 0, ',', '.') }}
                         </h6>
                     </div>
@@ -68,11 +67,11 @@
             </div>
 
             <!-- Modal -->
-            <div class="modal fade" id="bookModal{{ $book->kode_books }}" tabindex="-1" aria-labelledby="bookModalLabel{{ $book->kode_books }}" aria-hidden="true">
+            <div class="modal fade" id="bookModal{{ $book->kode_books_fisik }}" tabindex="-1" aria-labelledby="bookModalLabel{{ $book->kode_books_fisik }}" aria-hidden="true">
                 <div class="modal-dialog modal-lg modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="bookModalLabel{{ $book->kode_books }}">{{ $book->title }}</h5>
+                            <h5 class="modal-title" id="bookModalLabel{{ $book->kode_books_fisik }}">{{ $book->title }}</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
                         </div>
                         <div class="modal-body row">
@@ -85,34 +84,45 @@
                                     <li class="list-group-item"><strong>Penerbit:</strong> {{ $book->publisher->nama_publisher ?? '-' }}</li>
                                     <li class="list-group-item"><strong>Pengarang:</strong> {{ $book->author->nama_author ?? '-' }}</li>
                                     <li class="list-group-item"><strong>Harga:</strong> Rp{{ number_format($book->harga, 0, ',', '.') }}</li>
-                                    @php
-                                    $sudahBayar = in_array($book->kode_books, $pembayaranUser ?? []);
-                                @endphp
-                                
-                                <li class="list-group-item">
-                                    <strong>File Buku:</strong>
-                                    @if(in_array($book->kode_books, $userPembayaran))
-                                        <a href="{{ asset('storage/uploads/books/pdf/' . $book->file_book) }}" target="_blank">Lihat File</a>
-                                    @elseif(auth()->user()->role === 'Member')
-                                        @if(auth()->user()->saldo >= $book->harga)
-                                            <form method="POST" action="{{ route('Peminjaman.store', $book->kode_books) }}">
-                                                @csrf
-                                                <input type="hidden" name="kode_books" value="{{ $book->kode_books }}">
-                                                <input type="hidden" name="user_id" value="{{ auth()->user()->id }}">
-                                                <label for="tanggal_pinjam">Tanggal Pinjam</label>
-                                                <input type="date" name="tanggal_pinjam" class="form-control mb-2" required>
-                                                <label for="tanggal_kembali">Tanggal Kembali</label>
-                                                <input type="date" name="tanggal_kembali" class="form-control mb-2" required>                                            
-                                                <button type="submit" class="btn btn-sm btn-success">Bayar Rp{{ number_format($book->harga, 0, ',', '.') }}</button>
-                                            </form>
+                                    <li class="list-group-item"><strong>ISBN:</strong> {{ $book->isbn ?? '-' }}</li>
+                                    <li class="list-group-item"><strong>Deskripsi:</strong> {{ $book->deskripsi ?? '-' }}</li>
+
+                                    <li class="list-group-item">
+                                        <strong>Pinjam Buku:</strong>
+                                        @if(auth()->user()->role === 'Member')
+                                            @php
+                                                $latestPeminjaman = $book->peminjaman()->latest()->first();
+                                            @endphp
+
+                                            @if($latestPeminjaman && $latestPeminjaman->status == 'dipinjam' && in_array($book->kode_books_fisik, $userPembayaran))
+                                                <form method="POST" action="{{ route('Peminjaman.kembalikan', $book->kode_books_fisik) }}">
+                                                    @csrf
+                                                    @method('PUT')
+                                                    <input type="hidden" name="kode_books" value="{{ $book->kode_books_fisik }}">
+                                                    <input type="hidden" name="user_id" value="{{ auth()->user()->id }}">
+                                                    <button type="submit" class="btn btn-sm btn-danger">Kembalikan Buku</button>
+                                                </form>                                            
+                                            @elseif(!$latestPeminjaman || $latestPeminjaman->status != 'kembalikan')
+                                                @if(auth()->user()->saldo >= $book->harga)
+                                                    <form method="POST" action="{{ route('Peminjaman.store', $book->kode_books_fisik) }}">
+                                                        @csrf
+                                                        <input type="hidden" name="kode_books" value="{{ $book->kode_books_fisik }}">
+                                                        <input type="hidden" name="user_id" value="{{ auth()->user()->id }}">
+                                                        <label for="tanggal_pinjam">Tanggal Pinjam</label>
+                                                        <input type="date" name="tanggal_pinjam" class="form-control mb-2" required>
+                                                        <label for="tanggal_kembali">Tanggal Kembali</label>
+                                                        <input type="date" name="tanggal_kembali" class="form-control mb-2" required>                                            
+
+                                                        <button type="submit" class="btn btn-sm btn-success">Bayar Rp{{ number_format($book->harga, 0, ',', '.') }}</button>
+                                                    </form>
+                                                @else
+                                                    <span class="text-danger">Saldo tidak cukup</span>
+                                                @endif
+                                            @endif
                                         @else
-                                            <span class="text-danger">Saldo tidak cukup</span>
+                                            <span class="text-muted">Hanya untuk member</span>
                                         @endif
-                                    @else
-                                        <span class="text-muted">Hanya untuk member</span>
-                                    @endif
-                                </li>
-                                
+                                    </li>
                                 </ul>
                             </div>
                         </div>
@@ -125,12 +135,10 @@
             </div>
             @endforelse
         </div>
-                </tbody>
-            </table>
-        </div>
 
     </div>
 </main>
+
 <style>
     .book-card:hover {
         transform: translateY(-5px);
@@ -142,6 +150,7 @@
         height: 200px;
     }
 </style>
+
 @include('layout.footer')
 
 <script>
@@ -152,11 +161,9 @@
         let category = document.getElementById('categoryFilter').value;
         let publisher = document.getElementById('publisherFilter').value;
 
-        // Construct the URL with query parameters
-        let url = new URL('{{ url("Books/member") }}'); // Using Blade to get the base URL
-        let params = new URLSearchParams(url.search); // Get current query parameters if any
+        let url = new URL('{{ url("Books/member") }}');
+        let params = new URLSearchParams(url.search);
 
-        // Set or update the query parameters
         if (category) {
             params.set('category', category);
         } else {
@@ -169,7 +176,6 @@
             params.delete('publisher');
         }
 
-        // Reload the page with the updated query parameters
         window.location.href = url.origin + url.pathname + '?' + params.toString();
     }
 </script>

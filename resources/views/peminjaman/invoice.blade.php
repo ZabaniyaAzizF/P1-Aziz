@@ -62,8 +62,8 @@
                           <span class="badge bg-danger">Belum Lunas</span>
                         @endif
                       </td>
-                      <td>{{ $user->created_at }}</td>
-                      <td>{{ $user->updated_at }}</td>              
+                      <td>{{ $peminjam->created_at }}</td>
+                      <td>{{ $peminjam->updated_at }}</td>              
                   </tr>
                 @endforeach
               </tbody>

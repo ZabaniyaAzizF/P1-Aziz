@@ -41,6 +41,8 @@
                 <th>Tanggal Pinjam</th>
                 <th>Tanggal Kembali</th>
                 <th>Status Pembayaran</th>
+                <td>Di Buat</td>
+                <td>Di Update</td>
               </tr>
             </thead>
             <tbody>
@@ -58,8 +60,8 @@
                       <span class="badge bg-danger">Belum Lunas</span>
                     @endif
                   </td>
-                  <td>{{ $user->created_at }}</td>
-                  <td>{{ $user->updated_at }}</td> 
+                  <td>{{ $peminjam->created_at }}</td>
+                  <td>{{ $peminjam->updated_at }}</td> 
               </tr>
               @endforeach
             </tbody>

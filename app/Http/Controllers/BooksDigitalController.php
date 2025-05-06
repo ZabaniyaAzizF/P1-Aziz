@@ -7,6 +7,7 @@ use App\Models\Kategori;
 use App\Models\Author;
 use App\Models\Publisher;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class BooksDigitalController extends Controller
@@ -20,6 +21,25 @@ class BooksDigitalController extends Controller
         $book = null;
 
         return view('books_digital.index', compact('books', 'kategori', 'authors', 'publishers', 'book'));
+    }
+
+    public function indexMember()
+    {
+        $userId = auth()->id();
+    
+        $books = Books_digital::all();
+        $kategoriList = Kategori::all();
+        $authors = Author::all();
+        $publisherList = Publisher::all();
+    
+        // Get books that the user has borrowed
+        $pembelianUser = DB::table('pembelian')
+            ->where('user_id', $userId)
+            ->where('status', 'lunas')
+            ->pluck('kode_books_digital')
+            ->toArray();
+    
+        return view('books_digital.member', compact('books', 'kategoriList', 'authors', 'publisherList', 'pembelianUser'));
     }
 
     public function store(Request $request)
@@ -58,7 +78,7 @@ class BooksDigitalController extends Controller
             return redirect()->route('Books_digital.index')->with('success', 'Buku berhasil diperbarui.');
         } else {
             // INSERT
-            $validated['kode_books_digital'] = autonumber('books_digital', 'kode_books_digital', 5, 'BOK');
+            $validated['kode_books_digital'] = autonumber('books_digital', 'kode_books_digital', 5, 'BKD');
             Books_digital::create($validated);
             return redirect()->route('Books_digital.index')->with('success', 'Buku berhasil ditambahkan.');
         }

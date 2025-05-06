@@ -39,26 +39,28 @@
                 <th>Nama Member</th>
                 <th>Tanggal Pinjam</th>
                 <th>Tanggal Kembali</th>
-                <th>Status Pembayaran</th>
+                <th>Status</th>
+                <td>Di Buat</td>
+                <td>Di Update</td>
               </tr>
             </thead>
             <tbody>
               @foreach ($peminjamans as $peminjam)
               <tr>
                 <td>{{ $loop->iteration }}</td>
-                <td>{{ $peminjam->buku ? $peminjam->buku->title : 'N/A' }}</td>
+                <td>{{ $peminjam->buku_fisik ? $peminjam->buku_fisik->title : 'N/A' }}</td>
                 <td>{{ $peminjam->user ? $peminjam->user->name : 'N/A' }}</td>
                 <td>{{ \Carbon\Carbon::parse($peminjam->tanggal_pinjam)->format('d M Y') }}</td>
                 <td>{{ \Carbon\Carbon::parse($peminjam->tanggal_kembali)->format('d M Y') }}</td>
                 <td>
-                    @if($peminjam->status === 'lunas')
-                      <span class="badge bg-success">Lunas</span>
+                    @if($peminjam->status === 'dikembalikan')
+                      <span class="badge bg-success">Sudah Dikembalikan</span>
                     @else
-                      <span class="badge bg-danger">Belum Lunas</span>
+                      <span class="badge bg-danger">Belum Dikembalikan</span>
                     @endif
                   </td>
-                  <td>{{ $user->created_at }}</td>
-                  <td>{{ $user->updated_at }}</td>              
+                  <td>{{ $peminjam->created_at }}</td>
+                  <td>{{ $peminjam->updated_at }}</td>              
               </tr>
               @endforeach
             </tbody>

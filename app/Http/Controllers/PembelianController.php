@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
+use App\Models\Pembelian;
+use App\Models\BooksDigital;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class PembelianController extends Controller
 {
@@ -11,54 +15,60 @@ class PembelianController extends Controller
      */
     public function index()
     {
-        //
+        $pembelians = Pembelian::with(['user', 'buku_digital'])->get();
+        return view('pembelian.admin', compact('pembelians'));
+    }
+
+    public function indexMember()
+    {
+        $user = auth()->user();
+        $pembelians = Pembelian::with(['user', 'buku_digital'])
+            ->where('user_id', $user->id)
+            ->get();
+
+        return view('pembelian.index', compact('pembelians'));
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Handle payment for the purchase.
      */
-    public function create()
+    public function bayar(Request $request)
     {
-        //
-    }
+        $request->validate([
+            'kode_books_digital' => 'required',
+            'harga' => 'required|numeric',
+        ]);
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
+        $user = User::find(auth()->id());
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
+        // Cek saldo cukup
+        if ($user->saldo < $request->harga) {
+            return back()->with('error', 'Saldo tidak cukup untuk melakukan pembayaran.');
+        }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
+        // Generate kode_pembelian
+        $lastPembelian = DB::table('pembelian')->orderBy('kode_pembelian', 'desc')->first();
+        if ($lastPembelian) {
+            $lastNumber = (int)substr($lastPembelian->kode_pembelian, 2);
+            $newNumber = str_pad($lastNumber + 1, 4, '0', STR_PAD_LEFT);
+        } else {
+            $newNumber = '0001';
+        }
+        $kodePembelian = 'PB' . $newNumber;
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
+        // Kurangi saldo
+        $user->saldo -= $request->harga;
+        $user->save();
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        // Simpan ke tabel pembelian
+        Pembelian::create([
+            'kode_pembelian' => $kodePembelian,
+            'user_id' => $user->id,
+            'kode_books_digital' => $request->kode_books_digital,
+            'status' => 'lunas',
+            'tanggal_beli' => now(),
+        ]);
+
+        return redirect()->back()->with('success', 'Pembayaran berhasil!');
     }
 }
